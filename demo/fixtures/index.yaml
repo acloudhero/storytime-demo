@@ -1,0 +1,56 @@
+# StoryTime Phase 10F — Demo Seed Data / Golden Path Fixtures
+#
+# Fixture-set index. This file lists the curated demo scenarios that let an
+# operator demonstrate StoryTime's pipeline, operator report, failure queue,
+# Trust Envelope governance, and re-run command reproducibly from a clean
+# local environment.
+#
+# Each scenario has its own fixture definition file in this directory. A
+# fixture definition describes the scenario: its inputs, the content licensing
+# basis, the expected governance decision, the expected run / report / queue
+# state, the expected re-run eligibility, the commands to run, and the next
+# operator action. The fixture definitions are descriptions and expected-state
+# documentation — they are not generated runtime artifacts, and they do not
+# bypass or fake the real pipeline.
+#
+# Phase: 10F — Demo Seed Data / Golden Path Fixtures (locked 2026-05-25)
+# Status: locked. (This fixture set was authored in the Phase 10F round; that
+# round is now locked / accepted / canonical. Phase 10G — Portfolio Narrative /
+# Phase 10 Closure — corrected this stale status line during the State
+# Preservation Synchronization Gate.)
+#
+# The demo runbook that walks an operator through these scenarios is
+# docs/demo.md.
+
+fixture_set: storytime-phase10f-demo-golden-path-fixtures
+phase: "10F"
+status: locked
+runbook: docs/demo.md
+seed_dir: demo/seed
+governance_dir: demo/governance
+
+scenarios:
+  - scenario_id: STF-10F-01
+    scenario_name: successful-golden-path
+    file: 01-successful-golden-path.yaml
+    summary: A clean, authorised source runs end to end and completes.
+  - scenario_id: STF-10F-02
+    scenario_name: retryable-technical-failure
+    file: 02-retryable-technical-failure.yaml
+    summary: An authorised run fails at a genuine pipeline stage and is eligible for re-run.
+  - scenario_id: STF-10F-03
+    scenario_name: governance-blocked
+    file: 03-governance-blocked.yaml
+    summary: A source matched by the demo deny-list resolves to a BLOCKED governance decision.
+  - scenario_id: STF-10F-04
+    scenario_name: needs-review-approval-gate
+    file: 04-needs-review-approval-gate.yaml
+    summary: A run pauses at the operator text approval gate awaiting a human decision.
+  - scenario_id: STF-10F-05
+    scenario_name: rerun-requested
+    file: 05-rerun-requested.yaml
+    summary: A failed, eligible run after storytime rerun has been requested.
+  - scenario_id: STF-10F-06
+    scenario_name: completed-after-rerun
+    file: 06-completed-after-rerun.yaml
+    summary: A failed run recovered and completed via the re-run then resume path.

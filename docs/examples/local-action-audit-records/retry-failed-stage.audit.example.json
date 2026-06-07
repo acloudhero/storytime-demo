@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0",
+  "auditId": "audit-example-retry-0001",
+  "requestId": "req-example-retry-0001",
+  "action": "retry_failed_stage",
+  "target": {
+    "runId": "run-2026-0520-review",
+    "stageId": "run-2026-0520-review:governance-gate"
+  },
+  "workspace": {
+    "id": "ws-demo-0001",
+    "root": "storytime-workspace",
+    "slot": "active"
+  },
+  "storageTarget": {
+    "type": "local-disk"
+  },
+  "preconditionsEvaluated": [
+    {
+      "precondition": "Governance review recorded out-of-band.",
+      "outcome": "satisfied"
+    },
+    {
+      "precondition": "Blocked stage is in a retry-eligible state.",
+      "outcome": "satisfied"
+    }
+  ],
+  "decision": "accepted",
+  "result": null,
+  "createdAt": "2026-05-27T12:00:01Z",
+  "completedAt": null,
+  "evidenceRefs": [
+    "Pipeline Run Detail: run-2026-0520-review governance gate status"
+  ],
+  "idempotencyKey": "idem-retry-run-2026-0520-review-governance-gate-0001",
+  "notes": "Future example only. decision 'accepted' with result null means the retry was accepted but has not completed; success is recorded only when result is 'completed' and completedAt is set. Phase 13F generated no audit record; this is a documentation fixture, not a generated runtime artifact."
+}

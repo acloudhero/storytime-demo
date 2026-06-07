@@ -1,0 +1,58 @@
+# StoryTime .dockerignore — Phase 7C.1 optional app containerization.
+#
+# Purpose: durable runtime state, published artifacts, secrets, and local
+# caches MUST NEVER enter the image build context. The image is built from
+# source only; runs/ and feed/ live in per-slot named Docker volumes at run
+# time (see docker-compose.app.yml and docs/deployment-containerized.md).
+
+# --- Durable runtime state / published artifacts (named volumes at runtime) --
+runs/
+feed/
+# Phase 8B: structured demo logs are observability-stack input, never app-image
+# content.
+logs/
+# Phase 10B: the generated static operator report is runtime output, not
+# app-image content.
+operator-report/
+
+# --- Secrets and local environment (never baked into an image) --------------
+.env
+*.local.env
+*.secret.env
+*.env.local
+
+# --- Virtual environments ---------------------------------------------------
+.venv/
+venv/
+
+# --- Tooling / build caches -------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.import_linter_cache/
+
+# --- VCS / OS / editor noise ------------------------------------------------
+.git/
+.gitignore
+.DS_Store
+
+# --- Local RoundTable artifacts, if any are kept in-tree --------------------
+RT_PROMPT_*
+RT_RESPONSE_*
+*.tar.gz
+
+# --- Docs and observability infra not needed inside the app image ----------
+docs/
+# Phase 10F: demo seed data / golden-path fixtures are operator-demo material,
+# not app-image content (consistent with docs/ above).
+demo/
+docker-compose.observability.yml
+# Phase 8C: the optional vendor export overrides are observability infra too.
+docker-compose.vendor.dynatrace.yml
+docker-compose.vendor.newrelic.yml

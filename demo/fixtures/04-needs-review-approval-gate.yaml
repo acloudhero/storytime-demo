@@ -1,0 +1,82 @@
+# StoryTime Phase 10F demo fixture — Needs-Review / Approval-Gate Scenario
+#
+# Fixture definition: a description and expected-state record. It is not a
+# generated runtime artifact and it does not bypass the real pipeline.
+
+scenario_id: STF-10F-04
+scenario_name: needs-review-approval-gate
+phase: "10F"
+
+purpose: >-
+  Demonstrate a run that lands in a manual-review posture using the existing
+  operator text approval gate. The run pauses awaiting an operator decision,
+  is visible in the queue, and cannot move forward until the operator records
+  a decision.
+
+input_files:
+  - demo/seed/demo-needs-review.json
+  - demo/seed/demo-needs-review.txt
+
+content:
+  - title: The Second Reader
+    source_id: demo-needs-review
+    license_type: CC0-1.0
+    license_basis: >-
+      Original text written for StoryTime demo fixtures and dedicated to the
+      public domain under CC0-1.0. License deed:
+      https://creativecommons.org/publicdomain/zero/1.0/
+    author: StoryTime Demo Fixtures (generated-by-project original text)
+    allowed_use: Local demonstration of the StoryTime operator approval gate.
+    attribution_required: false
+    commercial_use_allowed: true
+    governance_expected_decision: APPROVED
+
+expected_governance_decision: APPROVED
+expected_run_state: awaiting_approval
+
+expected_report_behavior: >-
+  The run appears with run status awaiting_approval at the approve_text stage.
+  Governance is APPROVED (the source itself is authorised); the run is held by
+  the operator approval gate, not by governance.
+
+expected_queue_behavior: >-
+  The run appears in storytime queue --status awaiting-approval at stage
+  approve_text, with a next hint to record an operator decision with
+  storytime approve <run-id>.
+
+expected_rerun_eligibility: >-
+  Not eligible. An awaiting_approval run is not in the failed state, so
+  storytime rerun reports decision code 'not_retryable_status'. The correct
+  action is to record an approval decision, not to re-run. Re-run is not
+  allowed until the review condition (an operator decision at the gate) is
+  satisfied.
+
+expected_audit_behavior: >-
+  The event log records RunCreated, TextIngested, SourceManifestApproved,
+  GovernanceEvaluated, and TextApprovalRequested. Recording a decision with
+  storytime approve writes a TextApproved or TextRejected event.
+
+commands:
+  - "uv run storytime run -m demo/seed/demo-needs-review.json --require-approval"
+  - "uv run storytime queue --status awaiting-approval"
+  - "uv run storytime approve <run-id> --stage text --decision approve"
+  - "uv run storytime run --resume <run-id>"
+
+expected_next_operator_action: >-
+  Record the operator decision at the text gate with storytime approve. To let
+  the run finish, approve it and then resume with storytime run --resume; to
+  show a rejected outcome, reject it and observe the run move to failed.
+
+limitations: >-
+  This scenario uses the operator text approval gate, which the system
+  supports cleanly. A governance Trust Envelope decision of NEEDS_REVIEW is a
+  distinct state that the current local manifest path does not reach: the
+  source manifest schema restricts the license field to the recognised
+  CC0-1.0 / PD-US enum, and both map to an APPROVED Trust Envelope, so
+  trust_envelope_from_manifest never produces NEEDS_REVIEW from a
+  schema-valid manifest. A NEEDS_REVIEW governance decision would require an
+  envelope produced outside the manifest path; producing one is out of scope
+  for Phase 10F, which adds no new workflow. This fixture therefore
+  demonstrates the operator approval gate as the system's real manual-review
+  posture and documents the NEEDS_REVIEW limitation rather than inventing a
+  workflow to manufacture it.

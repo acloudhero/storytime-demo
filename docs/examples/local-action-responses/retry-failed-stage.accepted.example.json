@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "requestId": "req-example-retry-0001",
+  "accepted": true,
+  "status": "accepted",
+  "result": null,
+  "errors": [],
+  "warnings": [
+    "Acceptance is not success. Read final status from the refreshed export / read model keyed by actionRequestId."
+  ],
+  "exportRefreshRequired": true,
+  "auditRecordRef": "audit/retry-failed-stage.audit.example.json",
+  "actionRequestId": "act-example-retry-0001",
+  "jobId": "job-example-retry-0001",
+  "_note": "Future example only. A long-running retry is accepted asynchronously; status 'accepted' does NOT mean the retry completed. Phase 13F did not execute this; it is a documentation fixture, not a generated runtime artifact."
+}

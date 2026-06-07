@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# StoryTime runtime working state (see Architecture Baseline section 2 & 18)
+# runs/ holds per-pipeline_run_id working directories and the SQLite state DB.
+# feed/ holds published, immutable output. Neither is source-controlled.
+runs/
+feed/
+
+# Phase 8B: structured demo logs for the Collector filelog -> Loki path.
+# Written by `python -m storytime.demo --log-dir logs`; runtime output, not
+# source. docker-compose.observability.yml mounts this directory read-only.
+logs/
+
+# Phase 10B: the generated static operator report (storytime report generate).
+# Generated runtime output — a view over runs/, never source-controlled.
+operator-report/
+
+# Local environment
+.env
+# Phase 7C.1: local secret-bearing env files are never committed. StoryTime
+# has no secrets today; these patterns reserve the convention for any future
+# (e.g. Phase 8 vendor) credentials, which must be runtime-injected only.
+*.local.env
+*.secret.env
+*.env.local
+
+# OS noise
+.DS_Store
+.import_linter_cache/
+
+# Phase 13G.1: defense-in-depth against runtime database / journal artifacts
+# leaking into a packaged deliverable. runs/ is already ignored above; these
+# explicit patterns also catch any stray SQLite database or journal sibling
+# outside runs/, plus frontend build caches, so the archive-hygiene class of
+# leak cannot recur. (No such file is source-controlled today.)
+*.db
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+node_modules/
+*.tsbuildinfo
+
+# Phase 13I: governed local TTS proof runtime output. The proof writes its
+# generated audio, manifest, and audit log under a controlled artifact
+# directory that defaults to runs/tts-proof/ — already covered by runs/ above
+# (git-ignored, and excluded by scripts/build-artifact.sh). These explicit
+# patterns are defense-in-depth so generated audio can never be committed even
+# if an operator points STORYTIME_TTS_ARTIFACT_DIR elsewhere. No such file is
+# source-controlled today.
+runs/tts-proof/
+*.wav

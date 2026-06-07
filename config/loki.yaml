@@ -1,0 +1,59 @@
+# Loki configuration for the local StoryTime observability stack (Phase 8B).
+#
+# Loki is the local LOGS backend. Phase 8B routes logs into it WITHOUT Python
+# OTLP log export (Architecture Baseline §23.9 / §23.13): the StoryTime demo
+# harness writes structured JSON-lines log files, the OpenTelemetry Collector's
+# filelog receiver tails them, and the Collector forwards them to this Loki
+# over standard OTLP/HTTP. Grafana then queries Loki.
+#
+# Local-only and demo-grade: single-binary, filesystem storage, no auth, no
+# clustering, no object store. The 0.0.0.0 listen address below is INSIDE the
+# Loki container and is scoped by Docker's network; docker-compose.observability
+# .yml maps only 127.0.0.1:3100 to the host, so nothing is network-exposed.
+#
+# Image tag is pinned in docker-compose.observability.yml. Docker is not
+# available in the implementation environment, so the tag and this config are
+# UNVERIFIED there — see docs/open-issues.md OI-21. Verify on a Docker host.
+
+auth_enabled: false
+
+server:
+  http_listen_address: 0.0.0.0
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+  log_level: warn
+
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /loki
+  storage:
+    filesystem:
+      chunks_directory: /loki/chunks
+      rules_directory: /loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+schema_config:
+  configs:
+    - from: "2024-01-01"
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+limits_config:
+  # Loki 3.x ingests OTLP natively at /otlp/v1/logs. Structured metadata must
+  # be allowed for OTLP log attributes; it is the default in 3.x and is set
+  # here explicitly for clarity. retention_period bounds local disk use.
+  allow_structured_metadata: true
+  retention_period: 72h
+  reject_old_samples: false
+
+compactor:
+  working_directory: /loki/compactor
+  retention_enabled: true
+  delete_request_store: filesystem

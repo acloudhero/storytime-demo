@@ -1,0 +1,69 @@
+# StoryTime Phase 10F demo fixture — Successful Golden Path
+#
+# Fixture definition: a description and expected-state record. It is not a
+# generated runtime artifact and it does not bypass the real pipeline.
+
+scenario_id: STF-10F-01
+scenario_name: successful-golden-path
+phase: "10F"
+
+purpose: >-
+  Demonstrate the one-in / one-out happy path: a clean, authorised source runs
+  through the existing pipeline (ingest, synthesize, assemble, publish) and
+  completes, producing an operator report that needs no failure-queue
+  attention.
+
+input_files:
+  - demo/seed/demo-golden-path.json
+  - demo/seed/demo-golden-path.txt
+
+content:
+  - title: The Lamplighter
+    source_id: demo-golden-path
+    license_type: CC0-1.0
+    license_basis: >-
+      Original text written for StoryTime demo fixtures and dedicated to the
+      public domain under CC0-1.0. License deed:
+      https://creativecommons.org/publicdomain/zero/1.0/
+    author: StoryTime Demo Fixtures (generated-by-project original text)
+    allowed_use: Local demonstration of the StoryTime pipeline.
+    attribution_required: false
+    commercial_use_allowed: true
+    governance_expected_decision: APPROVED
+
+expected_governance_decision: APPROVED
+expected_run_state: completed
+
+expected_report_behavior: >-
+  The run appears in the operator report run list and on its own detail page
+  with run status completed, governance decision APPROVED, and no failure
+  summary. The index page attention counts do not include this run.
+
+expected_queue_behavior: >-
+  The run does not appear in the failure / review queue. A healthy completed
+  run is never queued (storytime queue surfaces only runs needing attention).
+
+expected_rerun_eligibility: >-
+  Not applicable. Re-run targets failed runs; a completed run is reported by
+  storytime rerun as not_retryable_status and is not eligible.
+
+expected_audit_behavior: >-
+  The append-only event log records the normal completion sequence
+  (RunCreated, TextIngested, SourceManifestApproved, GovernanceEvaluated,
+  SynthesisStarted/Completed, AssemblyCompleted, RSSPublished, RunCompleted).
+  No RunRerunRequested event is written.
+
+commands:
+  - "uv run storytime validate-manifest demo/seed/demo-golden-path.json"
+  - "uv run storytime run -m demo/seed/demo-golden-path.json --auto-approve"
+  - "uv run storytime status <run-id>"
+  - "uv run storytime report generate"
+
+expected_next_operator_action: >-
+  Open operator-report/index.html in a browser and confirm the run shows as
+  completed with an APPROVED governance decision. No further action is needed.
+
+notes: >-
+  --auto-approve records genuine approval decisions; it is a local convenience,
+  never a silent bypass. The assemble stage needs ffmpeg to encode MP3 audio;
+  run storytime doctor first to confirm ffmpeg is available.

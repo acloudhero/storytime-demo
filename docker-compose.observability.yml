@@ -1,0 +1,101 @@
+# Local observability stack for StoryTime.
+#
+# ARCH-LOCK: Docker is for observability ONLY (Architecture Baseline §16).
+# DO NOT REFACTOR: Do not containerize the StoryTime Python app. The app stays
+# uncontainerized; this compose file exists only so traces, metrics, and logs
+# have a local place to land and be viewed.
+#
+# Topology (Phase 8B):
+#   storytime --(OTLP/HTTP)--> otel-collector --+--> jaeger      (traces)
+#                                               +--> prometheus (metrics)
+#   storytime demo logs --(file)--> otel-collector filelog --> loki (logs)
+#   grafana --> prometheus (metrics), jaeger (traces), loki (logs)
+#
+# Every host port is bound to 127.0.0.1 so nothing is network-exposed. The
+# StoryTime test suite NEVER requires this stack; it is a view layer only.
+#
+# Image tags are pinned. Docker was unavailable in the Phase 6A / 8B build
+# environments, so the tags below are UNVERIFIED there — see docs/open-issues.md
+# OI-3 (collector/Jaeger/Prometheus/Grafana) and OI-21 (Loki). Verify with
+# `docker compose -f docker-compose.observability.yml pull` (and `... config`)
+# on a machine with Docker before relying on the stack.
+
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    container_name: storytime-jaeger
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "127.0.0.1:16686:16686"   # Jaeger UI
+    restart: unless-stopped
+
+  loki:
+    # Phase 8B local logs backend. Loki 3.x ingests OTLP natively, so the
+    # collector forwards logs here over standard OTLP/HTTP — no vendor or
+    # proprietary log exporter is involved.
+    image: grafana/loki:3.3.2
+    container_name: storytime-loki
+    command: ["-config.file=/etc/loki/loki.yaml"]
+    volumes:
+      - ./config/loki.yaml:/etc/loki/loki.yaml:ro
+    ports:
+      - "127.0.0.1:3100:3100"     # Loki HTTP API + OTLP log ingest
+    restart: unless-stopped
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.114.0
+    container_name: storytime-otel-collector
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes:
+      - ./config/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+      # Phase 8B: the structured demo log directory, read-only, for the
+      # `filelog` receiver. The StoryTime demo harness writes here when run
+      # with `--log-dir logs`; the collector only reads.
+      - ./logs:/var/log/storytime:ro
+    ports:
+      - "127.0.0.1:4317:4317"     # OTLP gRPC  (from the StoryTime process)
+      - "127.0.0.1:4318:4318"     # OTLP HTTP  (from the StoryTime process)
+    # 8889 (the Prometheus scrape endpoint) is intentionally NOT published to
+    # the host: only Prometheus, on the docker network, needs to reach it.
+    depends_on:
+      - jaeger
+      - loki
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: storytime-prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=72h"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "127.0.0.1:9090:9090"     # Prometheus UI / query API
+    depends_on:
+      - otel-collector
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    container_name: storytime-grafana
+    environment:
+      # Zero-click local demo: anonymous admin access, no login form. This is
+      # safe ONLY because every port is loopback-bound; do not reuse on a
+      # network-exposed host.
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_USERS_DEFAULT_THEME=light
+      - GF_LOG_LEVEL=warn
+    volumes:
+      - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./config/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "127.0.0.1:3000:3000"     # Grafana UI
+    depends_on:
+      - prometheus
+      - jaeger
+      - loki
+    restart: unless-stopped

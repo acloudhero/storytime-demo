@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0",
+  "requestId": "req-example-refresh-0001",
+  "mode": "local",
+  "action": "refresh_export",
+  "target": {
+    "exportPath": "exports/storytime-demo-export.json"
+  },
+  "workspace": {
+    "id": "ws-demo-0001",
+    "root": "storytime-workspace",
+    "slot": "active"
+  },
+  "storageTarget": {
+    "type": "local-disk"
+  },
+  "dryRun": false,
+  "requiresConfirmation": false,
+  "requestedAt": "2026-05-27T12:02:00Z",
+  "operatorIntent": "Regenerate the deterministic export / read model after a durable action result has been written, so the operator surface reflects new state.",
+  "preconditions": [
+    "Pipeline state has changed since the last export.",
+    "Export schema version matches the frontend types."
+  ],
+  "evidenceRefs": [
+    "Evidence / Validation view: STATIC PORTFOLIO DATA disclaimer and Data Source framing"
+  ],
+  "executionTiming": "async-long-running",
+  "_note": "Future example only. Phase 13F does not write the export file; this is a documentation fixture, not a generated runtime artifact."
+}

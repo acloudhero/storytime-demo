@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0",
+  "requestId": "req-example-retry-0001",
+  "mode": "local",
+  "action": "retry_failed_stage",
+  "target": {
+    "runId": "run-2026-0520-review",
+    "stageId": "run-2026-0520-review:governance-gate"
+  },
+  "workspace": {
+    "id": "ws-demo-0001",
+    "root": "storytime-workspace",
+    "slot": "active"
+  },
+  "storageTarget": {
+    "type": "local-disk"
+  },
+  "dryRun": false,
+  "requiresConfirmation": true,
+  "requestedAt": "2026-05-27T12:00:00Z",
+  "operatorIntent": "Resume the pipeline from the blocked Governance Gate stage once the governance review has been recorded out-of-band.",
+  "preconditions": [
+    "Governance review recorded out-of-band.",
+    "Trust Envelope source-authorization is no longer review-required.",
+    "Blocked stage is in a retry-eligible state."
+  ],
+  "evidenceRefs": [
+    "Pipeline Run Detail: run-2026-0520-review governance gate status",
+    "Governance / Safety view: review decision for run-2026-0520-review"
+  ],
+  "idempotencyKey": "idem-retry-run-2026-0520-review-governance-gate-0001",
+  "executionTiming": "async-long-running",
+  "_note": "Future example only. Phase 13F did not execute this; it is a documentation fixture, not a generated runtime artifact."
+}

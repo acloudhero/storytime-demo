@@ -1,0 +1,81 @@
+# StoryTime Phase 10F demo fixture — Rerun-Requested Scenario
+#
+# Fixture definition: a description and expected-state record. It is not a
+# generated runtime artifact and it does not bypass the real pipeline.
+
+scenario_id: STF-10F-05
+scenario_name: rerun-requested
+phase: "10F"
+
+purpose: >-
+  Demonstrate the documented, reproducible state of a run after storytime
+  rerun has been requested: the bounded mark-for-rerun reset that moves a
+  failed, eligible run back to the resumable running state and writes a
+  RunRerunRequested audit event.
+
+input_files:
+  - demo/seed/demo-retryable-failure.json
+  - demo/seed/demo-retryable-failure.txt
+
+content:
+  - title: The Ferryman's Lantern
+    source_id: demo-retryable-failure
+    license_type: CC0-1.0
+    license_basis: >-
+      Original text written for StoryTime demo fixtures and dedicated to the
+      public domain under CC0-1.0. License deed:
+      https://creativecommons.org/publicdomain/zero/1.0/
+    author: StoryTime Demo Fixtures (generated-by-project original text)
+    allowed_use: Local demonstration of the StoryTime re-run command.
+    attribution_required: false
+    commercial_use_allowed: true
+    governance_expected_decision: APPROVED
+
+expected_governance_decision: APPROVED
+expected_run_state: running
+
+expected_report_behavior: >-
+  After the re-run reset the run shows run status running again (the
+  resumable state). The report's rerun-eligibility guidance and command
+  reference point the operator at storytime run --resume to re-execute it.
+
+expected_queue_behavior: >-
+  Immediately after the reset the run is in the running state and is no longer
+  a failed entry in the queue. Healthy running runs are not surfaced by
+  storytime queue.
+
+expected_rerun_eligibility: >-
+  The run was eligible (decision code 'eligible') at the moment storytime
+  rerun was applied. After the reset it is in the running state, so a further
+  storytime rerun would report 'not_retryable_status' — the next step is
+  resume, not another re-run.
+
+expected_audit_behavior: >-
+  The bounded mutation is recorded as a RunRerunRequested event in the
+  append-only event log. Its payload carries only bounded metadata — a
+  mutation id, the from-stage, the previous and new run status, the governance
+  decision, and the dry-run flag — and no raw content. A dry run writes no
+  event.
+
+commands:
+  - "uv run storytime run -m demo/seed/demo-retryable-failure.json --auto-approve   # in an environment where assemble fails, see STF-10F-02"
+  - "uv run storytime rerun <run-id> --dry-run"
+  - "uv run storytime rerun <run-id>"
+  - "uv run storytime status <run-id>"
+
+expected_next_operator_action: >-
+  Re-execute the run from the failed stage with storytime run --resume
+  <run-id>. The completed outcome is fixture STF-10F-06.
+
+reproduction: >-
+  This scenario continues from fixture STF-10F-02 and reuses its seed and
+  manifest. First produce the failed, eligible run as in STF-10F-02 (run the
+  retryable-failure manifest with ffmpeg absent from PATH), then apply
+  storytime rerun <run-id>. The expected_run_state above is the documented
+  expected state after the re-run reset, not a checked-in generated run. This
+  uses the existing Phase 10D mark-for-rerun semantics unchanged.
+
+limitations: >-
+  storytime rerun resumes from the failed stage only and runs no pipeline work
+  itself. It performs exactly one bounded status reset plus one audit event,
+  then hands control back to the operator.

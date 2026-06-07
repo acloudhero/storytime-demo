@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "requestId": "req-example-refresh-0001",
+  "accepted": true,
+  "status": "accepted",
+  "result": null,
+  "errors": [],
+  "warnings": [
+    "Acceptance is not success. The export file is not written by Phase 13F; a future Local-mode bridge would write it after a durable action result."
+  ],
+  "exportRefreshRequired": false,
+  "auditRecordRef": null,
+  "actionRequestId": "act-example-refresh-0001",
+  "jobId": "job-example-refresh-0001",
+  "_note": "Future example only. Phase 13F does not write the export; this is a documentation fixture, not a generated runtime artifact."
+}

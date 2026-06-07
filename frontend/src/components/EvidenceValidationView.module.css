@@ -1,0 +1,366 @@
+/* ===========================================================================
+   EvidenceValidationView — Phase 13D.1 CSS Module.
+
+   Visual language follows the Phase 13B/13C/13D field-instrument aesthetic.
+   Consumes the global custom-property tokens defined in `src/styles.css`
+   (--panel, --panel-sunken, --rule, --rule-strong, --ink, --ink-soft,
+   --ink-faint, --signal, --signal-soft, --stop, --font-display, --font-body,
+   --font-mono). No global selectors are redefined here.
+
+   Sections:
+     - .container, .header, .lede                 (page header)
+     - .disclaimerBanner                          (mandatory STATIC PORTFOLIO
+                                                   DATA disclaimer)
+     - .factGrid, .factCard                       (scope strip)
+     - .section, .sectionHead, .sectionLede       (per-section primitives)
+     - .categoryGrid, .categoryCard               (claims vs proof)
+     - .snapshotGrid, .snapshotCard               (Demo / Active / Candidate)
+     - .refList, .refRow                          (repository references)
+     - .talkingList, .talkingItem                 (talking points)
+   =========================================================================== */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 4px 0 36px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.lede {
+  font-family: var(--font-body);
+  font-size: 0.96rem;
+  color: var(--ink-soft);
+  margin: 4px 0 0;
+  max-width: 72ch;
+}
+
+/* ─────────────────────── mandatory disclaimer banner ─────────────────── */
+
+.disclaimerBanner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 2px solid var(--signal);
+  border-radius: 4px;
+  background: var(--panel-sunken);
+}
+
+.disclaimerLabel {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--signal);
+  border: 1px solid var(--signal);
+  border-radius: 3px;
+  padding: 2px 8px;
+}
+
+.disclaimerText {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.disclaimerNote {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: -8px 0 0;
+  max-width: 72ch;
+}
+
+/* ─────────────────────── scope strip (static facts) ─────────────────── */
+
+.factGrid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-top: 4px;
+}
+
+.factCard {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 10px 12px;
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.factLabel {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.factValue {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ─────────────────────── section primitives ─────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.sectionHead {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.sectionLede {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 72ch;
+}
+
+/* ─────────────────────── claims vs proof grid ──────────────────────── */
+
+.categoryGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-top: 6px;
+}
+
+.categoryCard {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 12px 14px;
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.categoryTitle {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.categoryClaimLabel,
+.categoryProofLabel {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 4px 0 0;
+}
+
+.categoryClaim,
+.categoryProof {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--ink);
+  margin: 0;
+}
+
+.categoryProof {
+  color: var(--ink-soft);
+}
+
+.categoryPaths {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pathCode {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  color: var(--ink);
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 1px 6px;
+}
+
+/* ─────────────────────── snapshot grid ─────────────────────────────── */
+
+.snapshotGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 6px;
+}
+
+.snapshotCard {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 12px 14px;
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.snapshotCardCurrent {
+  border-color: var(--signal);
+  background: var(--panel);
+}
+
+.snapshotCardFuture {
+  border-style: dashed;
+  background: var(--panel-sunken);
+}
+
+.snapshotHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.snapshotTitle {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.snapshotPill {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  padding: 1px 6px;
+}
+
+.snapshotPillCurrent {
+  border: 1px solid var(--signal);
+  color: var(--signal);
+}
+
+.snapshotPillFuture {
+  border: 1px solid var(--rule-strong);
+  color: var(--ink-faint);
+}
+
+.snapshotDescription {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.snapshotCaption {
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-style: italic;
+  color: var(--ink-faint);
+  margin: 4px 0 0;
+}
+
+/* ─────────────────────── repository references ─────────────────────── */
+
+.refList {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.refRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: var(--panel);
+}
+
+.refPath {
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  color: var(--ink);
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 1px 6px;
+}
+
+.refNote {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+/* ─────────────────────── talking points ────────────────────────────── */
+
+.talkingList {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.talkingItem {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  padding-left: 14px;
+  position: relative;
+}
+
+.talkingItem::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  color: var(--signal);
+  font-weight: 600;
+}

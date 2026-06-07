@@ -1,0 +1,326 @@
+/* ===========================================================================
+   consolePolish — Phase 13J operator-console polish (shared module).
+
+   Shared, component-scoped styles for the new orientation and read-only TTS
+   pieces: the mode overview, the boundary legend, the Local Bridge operator
+   workflow, and the governed-TTS-proof summary. Built only on the existing
+   :root design tokens (the "field instrument" palette) so the polish extends
+   the established aesthetic rather than introducing a new one. Status is always
+   carried by a text label and a shape (dot / number), never by colour alone.
+   =========================================================================== */
+
+/* ── tone badge (shared) ─────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+.badgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.toneDemo {
+  color: var(--signal-deep);
+  background: var(--signal-wash);
+}
+
+.toneLocal {
+  color: var(--run);
+  background: var(--run-wash);
+}
+
+.toneProof {
+  color: var(--ok);
+  background: var(--ok-wash);
+}
+
+.toneReload {
+  color: var(--idle);
+  background: var(--idle-wash);
+}
+
+/* ── mode overview ───────────────────────────────────────────────────────── */
+
+.modeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+  gap: 16px;
+}
+
+.modeCard {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 16px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modeCard__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.modeCard__title {
+  font-family: var(--font-display);
+  font-size: 1.04rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+
+.modeCard__lead {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.modeCard__points {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+/* ── boundary legend ─────────────────────────────────────────────────────── */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  align-items: flex-start;
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.legend__item {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  min-width: 220px;
+  flex: 1 1 220px;
+}
+
+.legend__blurb {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
+
+/* ── operator workflow ───────────────────────────────────────────────────── */
+
+.flow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+  counter-reset: none;
+}
+
+.flow__step {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.flow__step:last-child {
+  border-bottom: 0;
+}
+
+.flow__num {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--signal-deep);
+  background: var(--signal-wash);
+  border: 1px solid var(--rule-strong);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.flow__title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.96rem;
+  color: var(--ink);
+}
+
+.flow__detail {
+  margin: 2px 0 0;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+/* ── TTS proof summary ───────────────────────────────────────────────────── */
+
+.tts {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--ok);
+  border-radius: 8px;
+  padding: 18px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tts__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tts__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 600;
+}
+
+.tts__intro {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  max-width: 64ch;
+}
+
+.tts__facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 16px;
+  margin: 0;
+}
+
+.tts__facts dt {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--ink-faint);
+  align-self: center;
+}
+
+.tts__facts dd {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tts__factDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.factOk {
+  background: var(--ok);
+}
+
+.factWarn {
+  background: var(--warn);
+}
+
+.factIdle {
+  background: var(--idle);
+}
+
+.tts__subhead {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  margin: 0 0 6px;
+}
+
+.tts__lifecycle {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.tts__event {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+.tts__eventName {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink);
+}
+
+.tts__ownership {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+.tts__readonly {
+  align-self: flex-start;
+}
+
+/* ── shared section block + responsive ───────────────────────────────────── */
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .tts__facts {
+    grid-template-columns: 1fr;
+    gap: 2px 0;
+  }
+  .tts__facts dt {
+    margin-top: 8px;
+  }
+}

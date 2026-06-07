@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0",
+  "requestId": "req-example-inspect-0001",
+  "mode": "local",
+  "action": "inspect_trust_envelope",
+  "target": {
+    "runId": "run-2026-0520-review"
+  },
+  "workspace": {
+    "id": "ws-demo-0001",
+    "root": "storytime-workspace",
+    "slot": "active"
+  },
+  "storageTarget": {
+    "type": "local-disk"
+  },
+  "dryRun": false,
+  "requiresConfirmation": false,
+  "requestedAt": "2026-05-27T12:01:00Z",
+  "operatorIntent": "Inspect the Trust Envelope governance context for the review-required run without making any change.",
+  "preconditions": [
+    "Run is identifiable by its stable id.",
+    "Governance / Safety view is reachable."
+  ],
+  "evidenceRefs": [
+    "Governance / Safety view: contextSummary, sourceCategory, status, disclaimer"
+  ],
+  "executionTiming": "sync-validation-only",
+  "_note": "Future example only. Phase 13F did not execute this; it is a documentation fixture, not a generated runtime artifact."
+}

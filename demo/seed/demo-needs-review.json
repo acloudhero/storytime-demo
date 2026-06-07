@@ -1,0 +1,19 @@
+{
+  "manifest_version": 1,
+  "source_id": "demo-needs-review",
+  "title": "The Second Reader",
+  "author": "StoryTime Demo Fixtures",
+  "source_url": "https://fixtures.storytime.invalid/needs-review",
+  "retrieval_date": "2026-01-05",
+  "jurisdiction": "US",
+  "license": "CC0-1.0",
+  "text_sha256": "ccd0c48c0056cd52a8611438b001b659fa759e948dc76b34be866d17b3facc9f",
+  "text_encoding": "utf-8",
+  "text_path": "demo-needs-review.txt",
+  "language": "en",
+  "approval": {
+    "approved_by": "demo-operator",
+    "approved_at": "2026-01-05T00:00:00Z",
+    "review_notes": "Original text written for StoryTime demo fixtures and dedicated to the public domain under CC0-1.0; source authorised, run through the operator text approval gate to demonstrate manual review."
+  }
+}

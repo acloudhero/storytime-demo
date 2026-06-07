@@ -1,0 +1,3 @@
+StoryTime governed local text-to-speech proof.
+This is the single approved fixture for the deterministic mock provider.
+It exists only to exercise the governed audio artifact boundary.

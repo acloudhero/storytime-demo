@@ -1,0 +1,35 @@
+# StoryTime — blocked-source configuration (Phase 9B, Architecture Baseline §24.9)
+#
+# This is a LOCAL, explicit, human-curated deny-list of sources the operator
+# has chosen to block. It is intentionally a plain, reviewable file:
+#
+#   * it is NOT a cloud service and fetches no remote blocklist;
+#   * it does NOT scrape or classify websites;
+#   * matching is deterministic, case-insensitive substring matching of each
+#     entry's `pattern` against a source's URL or reference id.
+#
+# A source matched here resolves to a BLOCKED governance decision and fails the
+# fail-closed gate before TTS, audio processing, or RSS publishing (§24.6).
+#
+# Governance here is SOURCE AUTHORISATION, not viewpoint acceptability (§24.5):
+# entries block sources for how they were obtained or licensed — never for the
+# opinions, themes, or positions a source expresses. Do not use this file as a
+# content-moderation or topic-policy list.
+#
+# Entry shape:
+#   - pattern: <substring of a source URL or source id>   (required)
+#     reason:  <why the operator blocked it>               (required)
+#     added:   <YYYY-MM-DD, optional bookkeeping>
+#     note:    <free-text operator note, optional>
+#
+# Example (commented out — this file ships empty so the local demo, which uses
+# CC0 / public-domain / explicit-permission / local-test-fixture content only,
+# is never blocked):
+#
+#   blocked_sources:
+#     - pattern: "blocked.example.invalid"
+#       reason: "operator-blocked example domain"
+#       added: "2026-05-24"
+#       note: "illustrative entry only"
+
+blocked_sources: []

@@ -1,0 +1,51 @@
+# Phase 8C / 8C.1 — OPTIONAL New Relic telemetry export override.
+#
+# DISABLED BY DEFAULT. This is a Compose OVERRIDE file: it does nothing on its
+# own. The default local-only stack — `docker compose -f
+# docker-compose.observability.yml up -d` — never reads this file and makes no
+# vendor network call.
+#
+# Vendor egress requires an EXPLICIT extra file on the command line:
+#
+#   1. cp config/vendor.secret.env.example config/vendor.secret.env
+#      # then edit config/vendor.secret.env with your real New Relic values
+#   2. docker compose -f docker-compose.observability.yml \
+#                     -f docker-compose.vendor.newrelic.yml up -d
+#
+# Adding this override mounts config/vendor/otel-collector.newrelic.example.yaml
+# (the local config PLUS the single New Relic otlphttp export profile) and
+# points the collector at it. Telemetry then fans out to New Relic over
+# standard OTLP/HTTP IN ADDITION to the local Jaeger / Prometheus / Loki stack.
+#
+# ONE VENDOR PER OVERRIDE — MUTUALLY EXCLUSIVE. This file enables New Relic
+# only. The Dynatrace profile is the separate docker-compose.vendor.dynatrace.yml.
+# Bring the stack up with AT MOST ONE vendor override. Stacking both vendor
+# `-f` files does NOT produce a two-vendor pipeline: a single Collector process
+# reads one resolved config, and Compose's `command:` is replaced (last `-f`
+# wins), so the combination silently activates only whichever override is last.
+# Pick exactly one. See docs/vendor-export-profiles.md.
+#
+# Secrets (Architecture Baseline 23.6, 23.7): the New Relic endpoint and key
+# are read from config/vendor.secret.env, which is git-ignored (the *.secret.env
+# pattern) and must never be committed. No secret appears in this file or in
+# config/vendor/otel-collector.newrelic.example.yaml.
+#
+# This override changes only the observability stack. It does NOT touch the
+# StoryTime application, its containers, or its behaviour.
+
+services:
+  otel-collector:
+    # volumes MERGE across override files: the New Relic config is mounted at a
+    # NEW container path, leaving the default mount harmless and unused here.
+    volumes:
+      - ./config/vendor/otel-collector.newrelic.example.yaml:/etc/otelcol-contrib/config-vendor-newrelic.yaml:ro
+    # command is REPLACED by an override: point the collector at the New Relic
+    # vendor config instead of the default local-only one.
+    command: ["--config=/etc/otelcol-contrib/config-vendor-newrelic.yaml"]
+    # Vendor endpoint + key, runtime-injected only, from a git-ignored
+    # secrets file. Create it from config/vendor.secret.env.example. Compose
+    # requires this file to exist when the override is used — the intended
+    # explicit, deliberate opt-in. Only the NEWRELIC_* values are read by this
+    # profile; any DYNATRACE_* placeholders left in the file are simply unused.
+    env_file:
+      - config/vendor.secret.env

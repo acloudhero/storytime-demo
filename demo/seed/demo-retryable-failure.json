@@ -1,0 +1,19 @@
+{
+  "manifest_version": 1,
+  "source_id": "demo-retryable-failure",
+  "title": "The Ferryman's Lantern",
+  "author": "StoryTime Demo Fixtures",
+  "source_url": "https://fixtures.storytime.invalid/retryable-failure",
+  "retrieval_date": "2026-01-04",
+  "jurisdiction": "US",
+  "license": "CC0-1.0",
+  "text_sha256": "52919fd53ef507623bde127e4bda3d6264955769521303c3d9253ee894c5dde7",
+  "text_encoding": "utf-8",
+  "text_path": "demo-retryable-failure.txt",
+  "language": "en",
+  "approval": {
+    "approved_by": "demo-operator",
+    "approved_at": "2026-01-04T00:00:00Z",
+    "review_notes": "Original text written for StoryTime demo fixtures and dedicated to the public domain under CC0-1.0; source authorised, used to demonstrate a transient stage failure and recovery."
+  }
+}

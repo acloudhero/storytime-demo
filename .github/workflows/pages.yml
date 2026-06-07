@@ -1,0 +1,73 @@
+# Phase 15C — Minimal Cloud Demo Deployment / Portfolio Readiness.
+#
+# Builds the StoryTime static operator console (frontend/) and publishes
+# frontend/dist to GitHub Pages. This deploys a CLOUD-HOSTED STATIC DEMO only:
+# there is no backend, no serverless function, no secret, and no cloud backend
+# service. The frontend is read-only and demo-data-backed; backend-dependent
+# views are gated to a local-only notice in static demo mode.
+#
+# Vite is configured with base: "./" (relative asset paths), so the build works
+# from a GitHub Pages project subpath without rewrites.
+
+name: Deploy static demo (GitHub Pages)
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch: {}
+
+# Read-only repo token; Pages deploy permissions only. No secrets are used.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One concurrent Pages deployment; don't cancel an in-flight publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies (clean, locked)
+        working-directory: frontend
+        run: npm ci
+
+      - name: Type-check
+        working-directory: frontend
+        run: npm run typecheck
+
+      - name: Build static demo
+        working-directory: frontend
+        run: npm run build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static artifact (frontend/dist)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

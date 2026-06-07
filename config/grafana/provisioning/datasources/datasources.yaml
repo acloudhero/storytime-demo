@@ -1,0 +1,36 @@
+# Grafana datasource provisioning — StoryTime local observability stack.
+#
+# ZERO UI CONFIGURATION (Phase 6A acceptance criterion 7): datasources are
+# defined here as code, not clicked into the Grafana UI. Grafana loads this
+# file on startup. Every datasource points only at the local in-network
+# backends brought up by docker-compose.observability.yml.
+#
+# Phase 8B adds the Loki datasource for local logs. Prometheus (metrics) and
+# Jaeger (traces) are unchanged.
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    uid: storytime-prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    jsonData:
+      timeInterval: 5s
+
+  - name: Jaeger
+    uid: storytime-jaeger
+    type: jaeger
+    access: proxy
+    url: http://jaeger:16686
+    editable: false
+
+  - name: Loki
+    uid: storytime-loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    editable: false

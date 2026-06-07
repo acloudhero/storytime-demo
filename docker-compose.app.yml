@@ -1,0 +1,105 @@
+# StoryTime app-slot compose — OPTIONAL local containerized blue/green, under
+# the locked Phase 7C / 7C.1 amendment. Phase 7D.1 fixed the build contract
+# (see "Build contract" below); the runtime architecture is unchanged.
+#
+# This file is OPTIONAL. Bare-metal local Python (scripts/run-slot.sh) remains
+# the default. Nothing here is required by the six quality gates.
+#
+# What it does: runs the blue and green StoryTime slots as two local
+# containers from ONE shared image, each with its own isolated SQLite state and
+# feed. What it does NOT do: no cloud, no registry, no Kubernetes, no Terraform,
+# no production server, no proxy container. The Phase 7B front door stays a HOST
+# process; the active-slot pointer stays a HOST file (config/deploy/active-slot).
+#
+# --- Build contract (Phase 7D.1) --------------------------------------------
+# ONE image, `storytime-app:local`, built by ONE service. `storytime-blue` owns
+# the sole `build:` section and exports `storytime-app:local`. `storytime-green`
+# has NO `build:` section — it CONSUMES the same image and is marked
+# `pull_policy: never` so it never tries to pull that local-only tag from a
+# registry. This makes both standard commands work on a fresh Docker cache:
+#   docker compose -f docker-compose.app.yml build   # builds the image once
+#   docker compose -f docker-compose.app.yml up -d    # builds if missing, runs both
+# Earlier, both services carried `build:` and exported the same tag, so a
+# parallel `docker compose build` raced on the image export ("image already
+# exists"). With one builder there is exactly one export and no race.
+# Note: green's `depends_on` only orders container START — it is NOT what makes
+# the image available. Image availability comes from blue's `build:` section,
+# which `up` runs (building any missing image) before any container is created.
+#
+# --- Loopback-only networking (Architecture Baseline §15) -------------------
+# Both services use `network_mode: host`. This is deliberate and is how the
+# loopback-only guarantee is met for a containerized slot:
+#   * The app binds 127.0.0.1 itself (STORYTIME_HTTP_HOST in the slot env
+#     file); validate_bind_host() still rejects 0.0.0.0 — that locked check is
+#     NOT weakened, and the app binds 0.0.0.0 nowhere.
+#   * With host networking the slot is reachable only on the host loopback
+#     (127.0.0.1:8000 / :8001), exactly as a bare-metal slot, so the host
+#     front door reaches it with no change.
+# Bridge networking + published ports is intentionally NOT used: published
+# ports would require the in-container app to bind 0.0.0.0, which the locked
+# §15 bind check forbids. See docs/deployment-containerized.md for the full
+# rationale and the Docker Desktop / OrbStack host-networking caveat.
+#
+# Pipeline commands (write SQLite state):
+#   docker compose -f docker-compose.app.yml run --rm storytime-blue run --manifest ...
+#   docker compose -f docker-compose.app.yml exec storytime-blue storytime status <id>
+
+name: storytime-app
+
+services:
+  # storytime-blue OWNS the build. It is the only service with a `build:`
+  # section, so `docker compose build` produces `storytime-app:local` exactly
+  # once with no parallel-export race.
+  storytime-blue:
+    build:
+      context: .
+    image: storytime-app:local
+    # Reuse the existing Phase 7A per-slot env file unchanged. It sets
+    # STORYTIME_DEPLOYMENT_SLOT=blue (→ runs/blue, feed/blue inside the
+    # volumes), STORYTIME_HTTP_HOST=127.0.0.1, STORYTIME_HTTP_PORT=8000.
+    env_file:
+      - config/deploy/blue.env
+    network_mode: host
+    volumes:
+      # Per-slot NAMED volumes — never host bind mounts — for SQLite state and
+      # feed output. Named volumes sit on the Docker VM's native Linux
+      # filesystem, so SQLite WAL locking/mmap is correct on every platform.
+      - storytime-blue-state:/app/runs
+      - storytime-blue-feed:/app/feed
+      # Optional read-only input mount (non-WAL material only). Uncomment to
+      # run pipelines against host source files; never mount SQLite state.
+      # - ./sources:/app/sources:ro
+    command: ["serve"]
+    restart: "no"
+
+  # storytime-green CONSUMES the same image. It has NO `build:` section, so it
+  # never builds/exports the tag (no race). `pull_policy: never` stops Compose
+  # from trying to pull the local-only `storytime-app:local` tag from a
+  # registry on a fresh cache — the image is provided locally by blue's build.
+  storytime-green:
+    image: storytime-app:local
+    pull_policy: never
+    depends_on:
+      # Ordering only: start green after blue. Image availability is guaranteed
+      # by blue's `build:` section, not by this dependency.
+      storytime-blue:
+        condition: service_started
+    env_file:
+      - config/deploy/green.env
+    network_mode: host
+    volumes:
+      - storytime-green-state:/app/runs
+      - storytime-green-feed:/app/feed
+      # - ./sources:/app/sources:ro
+    command: ["serve"]
+    restart: "no"
+
+# Per-slot named volumes. Their lifecycle is independent of the containers:
+# `docker compose down` (without -v) and rebuilds keep them; the slot's SQLite
+# state and feed survive. Removing a volume deletes that slot's local history
+# — a deliberate, destructive operator action (see docs/deployment-containerized.md).
+volumes:
+  storytime-blue-state:
+  storytime-blue-feed:
+  storytime-green-state:
+  storytime-green-feed:

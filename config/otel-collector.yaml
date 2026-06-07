@@ -1,0 +1,121 @@
+# OpenTelemetry Collector configuration for local StoryTime development.
+#
+# Topology (Phase 8B):
+#   storytime --(OTLP/HTTP)--> this collector --+--> Jaeger      (traces)
+#                                               +--> Prometheus  (metrics, scraped)
+#   storytime demo logs --(file)--> filelog receiver --> this collector --> Loki
+#
+# Phase 6A added the metrics pipeline. Phase 8B adds the LOGS pipeline: the
+# `filelog` receiver tails the structured JSON-lines log files the StoryTime
+# demo harness writes (mounted read-only at /var/log/storytime), and the
+# collector forwards them to Loki over standard OTLP/HTTP. Traces and metrics
+# are unchanged. The collector owns all telemetry routing (Architecture
+# Baseline Section 23): the StoryTime app sends OTLP only to this local
+# collector and never to a vendor; logs reach the collector as files, never via
+# Python OTLP log export.
+#
+# The 0.0.0.0 binds below are INSIDE the collector container and are scoped by
+# Docker's network. docker-compose.observability.yml maps only the host ports
+# it needs to 127.0.0.1, so nothing is exposed beyond the local machine. This
+# is unrelated to StoryTime's own HTTP server, which is loopback-bound in code.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+  # Phase 8B local log routing (Architecture Baseline Section 23.9): the
+  # `filelog` receiver tails structured JSON-lines log files written by the
+  # StoryTime demo harness (`python -m storytime.demo --log-dir logs`). It is
+  # the chosen design over Python OTLP log export and over Promtail. `filelog`
+  # is a contrib-only receiver, which is why the contrib image is used.
+  filelog:
+    include:
+      - /var/log/storytime/*.log
+    start_at: beginning
+    operators:
+      # Each line is one JSON object of control-plane metadata. Parse it into
+      # log attributes and map the `level` field onto the record severity.
+      - type: json_parser
+        parse_from: body
+        severity:
+          parse_from: attributes.level
+
+processors:
+  # Resilience (Architecture Baseline Section 23.10): memory_limiter bounds
+  # collector memory and drops data under pressure rather than crashing. It
+  # must be the FIRST processor in every pipeline.
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 256
+    spike_limit_mib: 64
+
+  batch: {}
+
+  # Stamp a service.name resource attribute on log records so Loki derives a
+  # stable stream label for StoryTime logs. The filelog receiver does not set
+  # resource attributes itself.
+  resource/logs:
+    attributes:
+      - key: service.name
+        value: storytime
+        action: upsert
+
+exporters:
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+    # Resilience (Section 23.10): retry then queue; drop, never block a run.
+    retry_on_failure:
+      enabled: true
+    sending_queue:
+      enabled: true
+
+  # METRIC HONESTY: add_metric_suffixes is false on purpose. The OpenTelemetry
+  # -> Prometheus convention otherwise appends `_total` to counters and a unit
+  # suffix to others. The Phase 5 metric names already carry their own
+  # suffixes (`pipeline_runs_total`, `pipeline_stage_duration_seconds`), so the
+  # default would produce `pipeline_runs_total_total`. With suffixes disabled,
+  # the series Prometheus stores have EXACTLY the names declared in
+  # storytime.adapters.telemetry.metrics. The only names added are the
+  # intrinsic `_bucket` / `_sum` / `_count` series of a Prometheus histogram.
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    add_metric_suffixes: false
+    resource_to_telemetry_conversion:
+      enabled: false
+
+  # Phase 8B logs backend. Standard OTLP/HTTP only (Architecture Baseline
+  # Section 23.4) — Loki 3.x ingests OTLP natively at /otlp/v1/logs, so the
+  # generic `otlphttp` exporter is used. This is deliberately NOT a
+  # vendor-specific or proprietary exporter.
+  otlphttp/loki:
+    endpoint: http://loki:3100/otlp
+    tls:
+      insecure: true
+    retry_on_failure:
+      enabled: true
+    sending_queue:
+      enabled: true
+
+  debug:
+    verbosity: normal
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlp/jaeger, debug]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [prometheus, debug]
+    logs:
+      receivers: [filelog]
+      processors: [memory_limiter, resource/logs, batch]
+      exporters: [otlphttp/loki, debug]

@@ -1,0 +1,19 @@
+{
+  "manifest_version": 1,
+  "source_id": "demo-governance-blocked",
+  "title": "The Closed Gate",
+  "author": "StoryTime Demo Fixtures",
+  "source_url": "https://blocked.fixtures.storytime.invalid/governance-blocked",
+  "retrieval_date": "2026-01-03",
+  "jurisdiction": "US",
+  "license": "CC0-1.0",
+  "text_sha256": "817561e75ec54027972138cb90d3b4fb0a2e08030d282bb1333cbe924474f096",
+  "text_encoding": "utf-8",
+  "text_path": "demo-governance-blocked.txt",
+  "language": "en",
+  "approval": {
+    "approved_by": "demo-operator",
+    "approved_at": "2026-01-03T00:00:00Z",
+    "review_notes": "Original text written for StoryTime demo fixtures and dedicated to the public domain under CC0-1.0. The source URL is intentionally matched by the demo blocked-source deny-list so the governance gate resolves to BLOCKED."
+  }
+}

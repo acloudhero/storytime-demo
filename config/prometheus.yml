@@ -1,0 +1,21 @@
+# Prometheus configuration for the local StoryTime observability stack.
+#
+# Prometheus scrapes the OpenTelemetry Collector's `prometheus` exporter, which
+# re-publishes the StoryTime metric instruments (see config/otel-collector.yaml).
+# Prometheus is the metrics backend Grafana queries; Jaeger remains the trace
+# backend. Nothing here is network-exposed: the host port is bound to 127.0.0.1
+# in docker-compose.observability.yml, and this config scrapes only the
+# in-network collector.
+
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+# No alerting. Phase 6A explicitly excludes Alertmanager / active alert
+# pipelines; there is intentionally no `alerting:` or `rule_files:` block.
+
+scrape_configs:
+  - job_name: storytime-otel-collector
+    # The collector's `prometheus` exporter endpoint, on the docker network.
+    static_configs:
+      - targets: ["otel-collector:8889"]

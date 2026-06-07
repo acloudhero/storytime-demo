@@ -1,0 +1,84 @@
+# StoryTime Phase 10F demo fixture — Governance-Blocked Scenario
+#
+# Fixture definition: a description and expected-state record. It is not a
+# generated runtime artifact and it does not bypass the real pipeline.
+
+scenario_id: STF-10F-03
+scenario_name: governance-blocked
+phase: "10F"
+
+purpose: >-
+  Demonstrate Trust Envelope governance blocking. A source whose URL is matched
+  by the demo blocked-source deny-list resolves to a BLOCKED governance
+  decision, the fail-closed gate stops the run before TTS / audio / RSS work,
+  and the operator-facing wording stays report-safe.
+
+input_files:
+  - demo/seed/demo-governance-blocked.json
+  - demo/seed/demo-governance-blocked.txt
+  - demo/governance/demo-blocked-sources.yaml
+
+content:
+  - title: The Closed Gate
+    source_id: demo-governance-blocked
+    license_type: CC0-1.0
+    license_basis: >-
+      Original text written for StoryTime demo fixtures and dedicated to the
+      public domain under CC0-1.0. License deed:
+      https://creativecommons.org/publicdomain/zero/1.0/
+    author: StoryTime Demo Fixtures (generated-by-project original text)
+    allowed_use: Local demonstration of the StoryTime governance gate.
+    attribution_required: false
+    commercial_use_allowed: true
+    governance_expected_decision: BLOCKED
+
+expected_governance_decision: BLOCKED
+expected_run_state: failed
+
+expected_report_behavior: >-
+  The run appears with run status failed and a governance decision of BLOCKED.
+  The report shows the Phase 10E report-safe governance wording — "Decision
+  detail: blocked by governance policy; inspect Trust Envelope locally if
+  authorized." — and never the raw blocked_reason text.
+
+expected_queue_behavior: >-
+  The run appears in storytime queue --status blocked with governance BLOCKED
+  and failure category governance. The queue shows only the decision enum,
+  never the free-text blocked_reason.
+
+expected_rerun_eligibility: >-
+  Not eligible. storytime rerun <run-id> reports decision code
+  'governance_blocked' and exits non-zero. A re-run never bypasses governance;
+  a BLOCKED source cannot be retried merely by asking.
+
+expected_audit_behavior: >-
+  The Trust Envelope projection records the BLOCKED decision and the durable
+  Trust Envelope artifact is written, so the blocking decision is on the audit
+  record. The event log records GovernanceEvaluated and RunFailed. No
+  RunRerunRequested event is written.
+
+commands:
+  - "STORYTIME_BLOCKED_SOURCES=demo/governance/demo-blocked-sources.yaml uv run storytime run -m demo/seed/demo-governance-blocked.json"
+  - "uv run storytime queue --status blocked"
+  - "uv run storytime rerun <run-id> --dry-run"
+  - "uv run storytime report generate"
+
+expected_next_operator_action: >-
+  Confirm the run is BLOCKED in the queue and the report. If authorised,
+  inspect the run's durable Trust Envelope artifact locally to see the full
+  governance record. No re-run is possible while the source is blocked.
+
+governance_wording: >-
+  Operator-facing detail must preserve the Phase 10E requirement: "Decision
+  detail: blocked by governance policy; inspect Trust Envelope locally if
+  authorized." The report and queue present governance status as a record of a
+  human operator decision, never as legal advice or certification of copyright
+  safety.
+
+notes: >-
+  The demo deny-list is supplied for one run via the existing
+  STORYTIME_BLOCKED_SOURCES environment variable (Architecture Baseline
+  section 24.9). This changes no enforcement code and no committed
+  configuration — the repository's config/governance/blocked-sources.yaml stays
+  empty. The block is a source-authorisation decision; the seed text itself is
+  original CC0 content.

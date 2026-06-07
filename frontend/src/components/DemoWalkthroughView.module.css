@@ -1,0 +1,518 @@
+/* ===========================================================================
+   DemoWalkthroughView — Phase 13D.2 CSS Module.
+
+   Visual language follows the Phase 13B/13C/13D/13D.1 field-instrument
+   aesthetic. Consumes the global custom-property tokens defined in
+   `src/styles.css` (--panel, --panel-sunken, --rule, --rule-strong, --ink,
+   --ink-soft, --ink-faint, --signal, --signal-soft, --font-display,
+   --font-body, --font-mono). No global selectors are redefined here.
+
+   Sections:
+     - .container, .header, .eyebrow, .title, .lede   (page header)
+     - .tabBar, .tab, .tabActive                      (route segmented control)
+     - .routeSection, .routeHead, .routeIntro,
+       .stepList, .stepCard, .stepActions             (active-route content)
+     - .section, .sectionHead                         (per-section primitives)
+     - .checkpointGrid, .checkpointCard               (architecture cards)
+     - .deferredList, .deferredItem                   (what is deferred)
+     - .talkingPointGrid, .talkingPointCard           (interview cards)
+     - .refList, .refItem, .pathCode                  (repo references)
+   =========================================================================== */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 4px 0 36px;
+}
+
+/* ────────────────────────── header ────────────────────────── */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+
+.lede {
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 64ch;
+}
+
+/* ───────────────────── tab bar / segmented control ────────── */
+
+.tabBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px;
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+
+.tab {
+  flex: 1 1 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s ease, border-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.tab:hover {
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+.tabActive {
+  background: var(--panel);
+  border-color: var(--rule-strong);
+  color: var(--ink);
+}
+
+.tabLabel {
+  font-weight: 600;
+}
+
+.tabSubLabel {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+}
+
+/* ───────────────────── active route section ──────────────── */
+
+.routeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+
+.routeHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 14px;
+}
+
+.routeTitle {
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+
+.routeMeta {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+}
+
+.routeIntro {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 70ch;
+}
+
+.stepList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 4px 0 0;
+  padding: 0;
+  counter-reset: step-counter;
+}
+
+.stepListItem {
+  counter-increment: step-counter;
+  position: relative;
+}
+
+/* ─────────────────────── step card ───────────────────────── */
+
+.stepCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+
+.stepHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.stepTitle {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+
+.stepTitle::before {
+  content: counter(step-counter) ". ";
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.stepBadge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+.stepRunContext {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.stepDetail {
+  display: grid;
+  grid-template-columns: minmax(120px, max-content) 1fr;
+  gap: 4px 14px;
+  margin: 0;
+}
+
+.stepDetail dt {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  align-self: start;
+  padding-top: 2px;
+}
+
+.stepDetail dd {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.stepTalkingPoints {
+  list-style: disc;
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.stepActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.stepNavBtn {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  padding: 8px 14px;
+  background: var(--panel);
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.stepNavBtn:hover {
+  background: var(--signal-soft);
+  border-color: var(--signal);
+}
+
+.stepNavBtn:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+/* ─────────────────────── generic section ─────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+
+.sectionHead {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: 1.14rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+
+.sectionSubtitle {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 72ch;
+}
+
+/* ─────────────────── architecture checkpoints ────────────── */
+
+.checkpointGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.checkpointCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+
+.checkpointTitle {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+
+.checkpointBody {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.checkpointEvidence {
+  list-style: "→ ";
+  margin: 2px 0 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+/* ─────────────────── deferred-work list ─────────────────── */
+
+.deferredList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deferredItem {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) 1fr;
+  gap: 4px 16px;
+  padding: 10px 12px;
+  background: var(--panel-sunken);
+  border-left: 2px solid var(--rule-strong);
+  border-radius: 0 4px 4px 0;
+}
+
+.deferredTitle {
+  font-family: var(--font-display);
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: var(--ink);
+  align-self: start;
+}
+
+.deferredBody {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+/* ───────────────────── talking points ─────────────────────── */
+
+.talkingPointGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+.talkingPointCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  background: var(--panel-sunken);
+  border: 1px dashed var(--rule-strong);
+  border-radius: 6px;
+}
+
+.talkingPointLabel {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0;
+}
+
+.talkingPointBody {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ink);
+  margin: 0;
+}
+
+/* ───────────────── repository references ────────────────── */
+
+.refList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.refItem {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) minmax(220px, 1fr) minmax(160px, 1fr);
+  gap: 4px 16px;
+  align-items: baseline;
+  padding: 8px 12px;
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+
+.refLabel {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+.refHint {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.pathCode {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 2px 6px;
+  word-break: break-all;
+}
+
+/* ───────────────────── responsive trims ────────────────── */
+
+@media (max-width: 720px) {
+  .deferredItem {
+    grid-template-columns: 1fr;
+  }
+
+  .refItem {
+    grid-template-columns: 1fr;
+  }
+
+  .stepDetail {
+    grid-template-columns: 1fr;
+  }
+
+  .stepDetail dt {
+    padding-top: 6px;
+  }
+}

@@ -1,0 +1,146 @@
+/* DisabledFutureActionCard — Phase 13D.1 reusable disabled-action display.
+ *
+ * Scoped via CSS Modules. Consumes the global custom-property tokens defined
+ * in `frontend/src/styles.css` (--panel, --panel-sunken, --rule, --rule-strong,
+ * --ink, --ink-soft, --ink-faint, --font-body, --font-mono, --stop) so the
+ * field-instrument visual language stays consistent across views.
+ *
+ * Mirrors the existing Phase 13D Governance / Safety + Failure / Recovery
+ * disabled-action row look (dashed border, sunken panel, faint label, monospace
+ * uppercase pills) so a refactor of those views to use this component is a
+ * visual no-op. The disabled <button> itself sits at .button — its
+ * `disabled` attribute is set in TSX and there is NO onClick handler.
+ */
+
+.card {
+  border: 1px solid var(--rule);
+  border-style: dashed;
+  border-radius: 4px;
+  padding: 12px 14px;
+  background: var(--panel-sunken);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The native disabled <button>. We force the visual to match an inert label
+ * rather than a clickable control: no background, no hover, dashed border,
+ * not-allowed cursor. The `disabled` attribute in the DOM is what actually
+ * prevents activation — these styles only make that state legible. */
+.button {
+  font-family: var(--font-body);
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: var(--ink-faint);
+  background: transparent;
+  border: 1px dashed var(--rule-strong);
+  border-radius: 3px;
+  padding: 4px 10px;
+  cursor: not-allowed;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 1; /* keep the label readable rather than fading out */
+}
+
+.button:disabled:hover,
+.button:disabled:focus {
+  background: transparent;
+  color: var(--ink-faint);
+  border-color: var(--rule-strong);
+  outline: none;
+}
+
+/* Small uppercase mono tag pills next to the button.                       */
+.pill {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  padding: 1px 6px;
+}
+
+.pillDisabled {
+  border: 1px solid var(--rule-strong);
+  color: var(--ink-faint);
+}
+
+.pillMutation {
+  border: 1px solid var(--stop);
+  color: var(--stop);
+}
+
+.enabledBy {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin-left: auto;
+}
+
+.reason {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin: 8px 0 0;
+}
+
+.safety {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-style: italic;
+  color: var(--ink-faint);
+  margin: 6px 0 0;
+}
+
+/* List wrapper (DisabledFutureActionList) ---------------------------------- */
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.heading {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin: 18px 0 8px;
+  color: var(--ink);
+}
+
+.preface {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 0 0 4px;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.empty {
+  border: 1px dashed var(--rule);
+  border-radius: 4px;
+  padding: 10px 14px;
+  background: var(--panel-sunken);
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+}
+
+@media (max-width: 600px) {
+  .enabledBy {
+    margin-left: 0;
+    width: 100%;
+  }
+}

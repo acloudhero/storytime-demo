@@ -1,0 +1,140 @@
+# OpenTelemetry Collector configuration — OPTIONAL Dynatrace export profile.
+#
+# Phase 8C / 8C.1. This file is the local Phase 8B collector configuration PLUS
+# a single disabled-by-default vendor export profile: Dynatrace. It is an
+# EXAMPLE/template. New Relic is NOT in this file — see the sibling
+# `config/vendor/otel-collector.newrelic.example.yaml` for that profile.
+#
+# DISABLED BY DEFAULT — how. This file is loaded ONLY when the operator
+# explicitly opts in by adding the Dynatrace override compose file:
+#
+#   docker compose -f docker-compose.observability.yml \
+#                  -f docker-compose.vendor.dynatrace.yml up -d
+#
+# The default local-only path (`docker-compose.observability.yml` alone) uses
+# `config/otel-collector.yaml`, which has NO vendor exporter at all. So in the
+# default state this file is never read, no vendor exporter is in any pipeline,
+# and no outbound vendor network call is made (Architecture Baseline 23.6).
+#
+# ONE VENDOR PER PROFILE. This config wires exactly one vendor. The Dynatrace
+# and New Relic override files are MUTUALLY EXCLUSIVE: bring the stack up with
+# at most one of them. Stacking both `-f` files does not produce a two-vendor
+# pipeline — a single Collector process reads a single resolved config and
+# Compose's `command:` is last-write-wins. See docs/vendor-export-profiles.md.
+#
+# Standard OTLP/HTTP only (23.4): the vendor profile uses the generic
+# `otlphttp` exporter. No proprietary vendor exporter, no vendor agent, no
+# vendor SDK — and no Datadog exporter (Datadog is deferred, 23.11).
+#
+# Secrets (23.7): the vendor endpoint and token are injected from the
+# environment via ${env:...}. This file contains NO real endpoint, token, or
+# tenant ID. The override compose file injects the values from a git-ignored
+# secrets file — see config/vendor.secret.env.example.
+#
+# Resiliency (23.10): a vendor endpoint that is down, slow, or rejecting data
+# must never affect local export or the StoryTime app. The vendor exporter has
+# a bounded `retry_on_failure` (max_elapsed_time) and a `sending_queue`;
+# `memory_limiter` is first in every pipeline. Failure mode is drop-not-crash,
+# and the local Jaeger/Prometheus/Loki exporters are independent siblings.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+  filelog:
+    include:
+      - /var/log/storytime/*.log
+    start_at: beginning
+    operators:
+      - type: json_parser
+        parse_from: body
+        severity:
+          parse_from: attributes.level
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 256
+    spike_limit_mib: 64
+
+  batch: {}
+
+  resource/logs:
+    attributes:
+      - key: service.name
+        value: storytime
+        action: upsert
+
+exporters:
+  # --- Local backends (identical to config/otel-collector.yaml) -------------
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+    retry_on_failure:
+      enabled: true
+    sending_queue:
+      enabled: true
+
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    add_metric_suffixes: false
+    resource_to_telemetry_conversion:
+      enabled: false
+
+  otlphttp/loki:
+    endpoint: http://loki:3100/otlp
+    tls:
+      insecure: true
+    retry_on_failure:
+      enabled: true
+    sending_queue:
+      enabled: true
+
+  debug:
+    verbosity: normal
+
+  # ===== BEGIN Phase 8C vendor profile: Dynatrace ===========================
+  # Standard OTLP/HTTP only (23.4). Dynatrace ingests OTLP at its environment's
+  # /api/v2/otlp path, authenticated with an `Authorization: Api-Token <token>`
+  # header. Endpoint and token are env-injected — set DYNATRACE_OTLP_ENDPOINT
+  # and DYNATRACE_API_TOKEN in a git-ignored *.secret.env file
+  # (config/vendor.secret.env.example is the template). To NOT use Dynatrace,
+  # simply bring the stack up without docker-compose.vendor.dynatrace.yml — the
+  # default path is local-only with zero vendor exporters.
+  otlphttp/dynatrace:
+    endpoint: ${env:DYNATRACE_OTLP_ENDPOINT}
+    headers:
+      Authorization: "Api-Token ${env:DYNATRACE_API_TOKEN}"
+    # Resiliency (23.10): bounded retry, then drop. max_elapsed_time caps how
+    # long a failing batch is retried so a vendor outage cannot back up.
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 60s
+    sending_queue:
+      enabled: true
+  # ===== END Phase 8C vendor profile: Dynatrace =============================
+
+service:
+  pipelines:
+    # Each pipeline fans out to the local backend AND, additionally, to the
+    # Dynatrace profile. The exporters are independent siblings: the Dynatrace
+    # leg failing drops only that leg's data and never affects the local legs.
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlp/jaeger, otlphttp/dynatrace, debug]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [prometheus, otlphttp/dynatrace, debug]
+    logs:
+      receivers: [filelog]
+      processors: [memory_limiter, resource/logs, batch]
+      exporters: [otlphttp/loki, otlphttp/dynatrace, debug]

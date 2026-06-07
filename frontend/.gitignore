@@ -1,0 +1,14 @@
+# Frontend build + dependency artifacts — never source-controlled, never
+# included in a StoryTime phase artifact.
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Vite / tooling caches
+.vite/
+node_modules/.vite/
+
+# Editor / OS noise
+.DS_Store
+*.log

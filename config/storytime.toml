@@ -1,0 +1,28 @@
+# StoryTime configuration — SAMPLE / REFERENCE.
+#
+# Phase 2 reads configuration from environment variables (see .env.example);
+# storytime.config.load_config() is the single loader. This TOML file documents
+# the same settings and is the intended file-config source for a future TOML
+# loader (OI-5). It is not read by the current scaffold.
+
+[paths]
+runs_dir = "runs"
+feed_dir = "feed"
+
+[telemetry]
+# "noop" (default) or "otel"
+mode = "noop"
+otlp_endpoint = "http://127.0.0.1:4318"
+
+[http]
+# ARCH-LOCK: loopback only. 0.0.0.0 is rejected by storytime.http.
+host = "127.0.0.1"
+port = 8000
+
+[deployment]
+# Phase 7A blue/green Option A. environment is a free-form telemetry label;
+# slot is empty (no slot) or a short lowercase identifier such as "blue" /
+# "green". When slot is set, the default state/feed roots become runs/<slot>
+# and feed/<slot> unless paths.runs_dir / paths.feed_dir are set explicitly.
+environment = "local"
+slot = ""

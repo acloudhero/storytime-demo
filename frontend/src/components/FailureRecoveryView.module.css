@@ -1,0 +1,416 @@
+/* ===========================================================================
+   FailureRecoveryView — Phase 13D CSS Module.
+
+   Same field-instrument visual language as Phase 13B/13C and the sibling
+   GovernanceSafetyView module: warm paper canvas, near-black ink, the amber
+   signal accent for interaction, and semantic status colours only on the
+   status chips. The module reuses global tokens from src/styles.css; it does
+   not redefine them or introduce a new visual register.
+   =========================================================================== */
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  margin: 38px 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* queue counts ------------------------------------------------------------- */
+
+.counts {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-top: 8px;
+}
+
+.countCard {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--signal);
+  border-radius: 4px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.countValue {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.countLabel {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* queue rows --------------------------------------------------------------- */
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.row {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 20px 22px;
+}
+
+.rowHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.rowIdent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rowLabel {
+  font-weight: 600;
+  font-size: 1.02rem;
+  color: var(--ink);
+}
+
+.rowId {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--ink-faint);
+}
+
+.summary {
+  margin: 12px 0 0;
+  font-size: 0.95rem;
+  color: var(--ink);
+  max-width: 64ch;
+}
+
+.warning {
+  margin: 8px 0 0;
+}
+
+.section {
+  margin-top: 16px;
+}
+
+.subHead {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin: 0 0 8px;
+}
+
+.inspectNote {
+  font-size: 0.92rem;
+  color: var(--ink);
+  margin: 0;
+  max-width: 64ch;
+}
+
+/* affected stage pill ------------------------------------------------------ */
+
+.stagePill {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 16px;
+  align-items: center;
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 12px 14px;
+}
+
+.stagePillName {
+  font-weight: 600;
+  font-size: 0.98rem;
+}
+
+.stagePillStatus {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  padding: 2px 8px;
+}
+
+.stagePillNote {
+  grid-column: 1 / -1;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 4px 0 0;
+}
+
+/* failure block ----------------------------------------------------------- */
+
+.failure {
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 12px 14px;
+}
+
+.failureKv {
+  display: grid;
+  grid-template-columns: 168px 1fr;
+  gap: 4px 16px;
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.failureKv dt {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding-top: 3px;
+}
+
+.failureKv dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+/* governance link -------------------------------------------------------- */
+
+.governance {
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 12px 14px;
+}
+
+.governanceHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.governanceTitle {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.governanceKv {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 4px 16px;
+  margin: 10px 0 0;
+  font-size: 0.92rem;
+}
+
+.governanceKv dt {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding-top: 3px;
+}
+
+.governanceKv dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+/* evidence --------------------------------------------------------------- */
+
+.evidenceList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.evidence {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 12px 14px;
+  background: var(--panel);
+}
+
+.evidenceHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.evidenceLabel {
+  font-weight: 600;
+  font-size: 0.94rem;
+}
+
+.evidenceNote {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin: 6px 0 0;
+}
+
+.evidenceRef {
+  display: block;
+  margin-top: 8px;
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink);
+  word-break: break-all;
+}
+
+/* disabled actions ------------------------------------------------------- */
+
+.actionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 12px 14px;
+  background: var(--panel);
+}
+
+.actionDisabled {
+  background: var(--panel-sunken);
+  border-style: dashed;
+}
+
+.actionDisabled .actionLabel {
+  color: var(--ink-faint);
+}
+
+.actionHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.actionLabel {
+  font-weight: 600;
+  font-size: 0.94rem;
+}
+
+.actionDesc {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin: 6px 0 0;
+}
+
+/* row footer / drilldown ------------------------------------------------- */
+
+.rowFooter {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.inspectBtn {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  color: var(--signal-deep);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.inspectBtn:hover:not(:disabled) {
+  border-color: var(--signal);
+  background: var(--signal-wash);
+}
+
+.inspectBtn:disabled {
+  cursor: not-allowed;
+  color: var(--ink-faint);
+  border-style: dashed;
+}
+
+/* empty state ------------------------------------------------------------ */
+
+.empty {
+  color: var(--ink-soft);
+}
+
+.empty p {
+  margin: 0;
+  max-width: 64ch;
+}
+
+/* talking points -------------------------------------------------------- */
+
+.talkingGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.talking {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 14px 16px;
+}
+
+.talkingHead {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.talkingBody {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* responsive ------------------------------------------------------------- */
+
+@media (max-width: 620px) {
+  .failureKv,
+  .governanceKv {
+    grid-template-columns: 1fr;
+    gap: 1px 0;
+  }
+  .failureKv dt,
+  .governanceKv dt {
+    padding-top: 10px;
+  }
+  .stagePill {
+    grid-template-columns: 1fr;
+  }
+}

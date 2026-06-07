@@ -1,0 +1,84 @@
+# StoryTime Phase 10F demo fixture — Retryable Technical Failure
+#
+# Fixture definition: a description and expected-state record. It is not a
+# generated runtime artifact and it does not bypass the real pipeline.
+
+scenario_id: STF-10F-02
+scenario_name: retryable-technical-failure
+phase: "10F"
+
+purpose: >-
+  Demonstrate a failed run that is eligible for re-run: an authorised source
+  ingests cleanly with an APPROVED Trust Envelope, then fails at a genuine
+  pipeline stage. This shows failure-queue visibility, the static report
+  failure summary, and re-run eligibility.
+
+input_files:
+  - demo/seed/demo-retryable-failure.json
+  - demo/seed/demo-retryable-failure.txt
+
+content:
+  - title: The Ferryman's Lantern
+    source_id: demo-retryable-failure
+    license_type: CC0-1.0
+    license_basis: >-
+      Original text written for StoryTime demo fixtures and dedicated to the
+      public domain under CC0-1.0. License deed:
+      https://creativecommons.org/publicdomain/zero/1.0/
+    author: StoryTime Demo Fixtures (generated-by-project original text)
+    allowed_use: Local demonstration of the StoryTime pipeline.
+    attribution_required: false
+    commercial_use_allowed: true
+    governance_expected_decision: APPROVED
+
+expected_governance_decision: APPROVED
+expected_run_state: failed
+
+expected_report_behavior: >-
+  The run appears with run status failed and a failure summary classified as a
+  technical (stage) failure — failure stage assemble, failure category
+  stage_failure, failure type FfmpegUnavailable. Because the Trust Envelope is
+  APPROVED, the report's rerun-eligibility guidance shows the run as eligible
+  and prints the plain-text re-run commands.
+
+expected_queue_behavior: >-
+  The run appears in storytime queue (and storytime queue --status failed)
+  with governance APPROVED, failure code FfmpegUnavailable, failure category
+  stage_failure, and a next hint pointing at the re-run command.
+
+expected_rerun_eligibility: >-
+  Eligible. storytime rerun <run-id> --dry-run reports decision code
+  'eligible' from stage 'assemble' with governance APPROVED. This uses the
+  existing Phase 10D semantics; the fixture changes nothing about them.
+
+expected_audit_behavior: >-
+  Until a re-run is requested, the event log records the failure sequence
+  ending in RunFailed. A RunRerunRequested event is written only when an
+  actual (non-dry-run) re-run is applied — see fixture STF-10F-05.
+
+commands:
+  - "uv run storytime run -m demo/seed/demo-retryable-failure.json --auto-approve"
+  - "uv run storytime queue --status failed"
+  - "uv run storytime rerun <run-id> --dry-run"
+  - "uv run storytime report generate"
+
+expected_next_operator_action: >-
+  Inspect the failure in the queue and report, then preview re-run eligibility
+  with storytime rerun <run-id> --dry-run. To recover the run, continue with
+  fixture STF-10F-05 (rerun requested) and STF-10F-06 (completed after rerun).
+
+reproduction: >-
+  This scenario needs a genuine pipeline-stage failure, and StoryTime is
+  honest about telemetry and state — it does not fake one. The reproducible,
+  environment-independent way to produce it with existing mechanisms is to run
+  this manifest with ffmpeg absent from PATH so the assemble stage fails with
+  FfmpegUnavailable. The demo runbook (docs/demo.md) shows the exact procedure
+  using a temporary PATH that excludes ffmpeg. On a host that simply has no
+  ffmpeg installed, a normal run of this manifest fails at assemble with no
+  extra steps. The expected_run_state above is the documented expected state,
+  not a checked-in generated run.
+
+limitations: >-
+  storytime rerun resumes from the failed stage only (Phase 10D scope). The
+  re-run command resets state and writes an audit event; it runs no pipeline
+  work itself — the operator runs storytime run --resume to re-execute.

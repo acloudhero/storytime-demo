@@ -1,0 +1,374 @@
+/* ===========================================================================
+   GovernanceSafetyView — Phase 13D CSS Module.
+
+   Visual language follows the Phase 13B/13C field-instrument aesthetic: warm
+   paper canvas, near-black ink, the amber signal accent for interaction, and
+   semantic status colours only on status chips. Layout, spacing, and type
+   choices borrow from the global stylesheet (panel, card-grid, kv, chip,
+   note-muted, tag-disabled, tag-mutation) so the view does not introduce a
+   different visual register. Where new layout primitives are needed they live
+   in this module-scoped file.
+
+   The module does not redefine global tokens — it consumes the existing CSS
+   custom properties from src/styles.css (--panel, --rule, --signal, etc.).
+   =========================================================================== */
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  margin: 38px 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.posture {
+  max-width: 64ch;
+  margin: 4px 0 12px;
+}
+
+.disclaimer {
+  margin: 0;
+}
+
+/* decision counts ---------------------------------------------------------- */
+
+.counts {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-top: 8px;
+}
+
+.countCard {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--signal);
+  border-radius: 4px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.countValue {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.countLabel {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* per-run rows ------------------------------------------------------------- */
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.row {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 20px 22px;
+}
+
+.rowHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.rowIdent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rowLabel {
+  font-weight: 600;
+  font-size: 1.02rem;
+  color: var(--ink);
+}
+
+.rowId {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--ink-faint);
+}
+
+.rowKv {
+  display: grid;
+  grid-template-columns: 168px 1fr;
+  gap: 4px 16px;
+  margin: 14px 0 0;
+  font-size: 0.92rem;
+}
+
+.rowKv dt {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding-top: 3px;
+}
+
+.rowKv dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+.subHead {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin: 18px 0 8px;
+}
+
+.rowDisclaimer {
+  margin: 16px 0 0;
+}
+
+.rowFooter {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.inspectBtn {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  color: var(--signal-deep);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.inspectBtn:hover {
+  border-color: var(--signal);
+  background: var(--signal-wash);
+}
+
+/* gate row ----------------------------------------------------------------- */
+
+.gate {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.gateLabel {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.gateNote {
+  grid-column: 1 / -1;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 4px 0 0;
+}
+
+/* evidence ----------------------------------------------------------------- */
+
+.evidenceBlock {
+  margin-top: 8px;
+}
+
+.evidenceList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.evidence {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 12px 14px;
+  background: var(--panel);
+}
+
+.evidenceHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.evidenceLabel {
+  font-weight: 600;
+  font-size: 0.94rem;
+}
+
+.evidenceNote {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin: 6px 0 0;
+}
+
+.evidenceRef {
+  display: block;
+  margin-top: 8px;
+  background: var(--panel-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink);
+  word-break: break-all;
+}
+
+/* disabled actions --------------------------------------------------------- */
+
+.actionsBlock {
+  margin-top: 8px;
+}
+
+.actionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 12px 14px;
+  background: var(--panel);
+}
+
+.actionDisabled {
+  background: var(--panel-sunken);
+  border-style: dashed;
+}
+
+.actionDisabled .actionLabel {
+  color: var(--ink-faint);
+}
+
+.actionHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.actionLabel {
+  font-weight: 600;
+  font-size: 0.94rem;
+}
+
+.actionDesc {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin: 6px 0 0;
+}
+
+/* honesty list ------------------------------------------------------------- */
+
+.honestyIntro {
+  max-width: 62ch;
+  margin-bottom: 12px;
+}
+
+.honesty {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.honestyItem {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--signal);
+  border-radius: 4px;
+  padding: 14px 16px;
+}
+
+.honestyTitle {
+  display: block;
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.honestyBody {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* talking points ---------------------------------------------------------- */
+
+.talkingGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.talking {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 14px 16px;
+}
+
+.talkingHead {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.talkingBody {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* responsive --------------------------------------------------------------- */
+
+@media (max-width: 620px) {
+  .rowKv {
+    grid-template-columns: 1fr;
+    gap: 1px 0;
+  }
+  .rowKv dt {
+    padding-top: 10px;
+  }
+  .gate {
+    grid-template-columns: 1fr;
+  }
+}

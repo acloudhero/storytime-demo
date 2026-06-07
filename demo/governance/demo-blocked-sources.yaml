@@ -1,0 +1,32 @@
+# StoryTime — demo blocked-source deny-list (Phase 10F demo fixtures)
+#
+# This is a DEMO-ONLY blocked-source deny-list used by the Phase 10F
+# governance-blocked golden-path fixture. It is NOT the repository's real
+# deny-list: the committed config/governance/blocked-sources.yaml ships empty
+# on purpose so the normal local demo is never blocked.
+#
+# To exercise the governance-blocked scenario, point StoryTime at this file
+# for one run via the existing STORYTIME_BLOCKED_SOURCES environment variable:
+#
+#   STORYTIME_BLOCKED_SOURCES=demo/governance/demo-blocked-sources.yaml \
+#     uv run storytime run -m demo/seed/demo-governance-blocked.json
+#
+# This changes no enforcement code and no committed configuration. It only
+# tells one StoryTime process which deny-list file to read, using the
+# Phase 9B mechanism (Architecture Baseline section 24.9). When the run ends,
+# nothing about the repository's default behaviour has changed.
+#
+# Governance here is SOURCE AUTHORISATION, not viewpoint acceptability
+# (section 24.5): the entry below blocks a source by how it was obtained or
+# referenced, never for the opinions or themes a text expresses. The demo
+# seed text demo-governance-blocked.txt is itself original CC0 content; the
+# block is a deliberate source-authorisation decision, not a content problem.
+#
+# Matching is deterministic, case-insensitive substring matching of each
+# entry's `pattern` against a source manifest's source_url or source_id.
+
+blocked_sources:
+  - pattern: "blocked.fixtures.storytime.invalid"
+    reason: "demo deny-list entry: exercises the governance-blocked golden path"
+    added: "2026-05-25"
+    note: "Phase 10F demo fixture only; not a real-world block. The matched source is original CC0 fixture text."

@@ -1,0 +1,334 @@
+{
+  "exportKind": "phase13c_static_demo",
+  "failureQueue": [
+    {
+      "inspectNext": "Open this run in the Pipeline Run Detail view and read the governance section.",
+      "reason": "needs_review",
+      "runId": "run-2026-0520-review",
+      "runLabel": "Untitled community submission (source pending review)",
+      "summary": "Held at the governance gate — the source needs an operator authorization decision."
+    }
+  ],
+  "generatedBy": "storytime.operator_export",
+  "project": {
+    "currentPhase": "Phase 13C",
+    "currentPhaseStatus": "Implementation candidate, pending review. Phase 13C aligns the frontend with a deterministic, read-only static export produced by the backend: the data the portfolio shell shows now comes from a backend-defined export contract, still static and demo-data-backed, with no live backend and no mutations.",
+    "demonstrates": [
+      "An end-to-end pipeline (ingest, synthesize, assemble, publish) with persisted operator approval gates and resume from SQLite.",
+      "Observability as a first-class concern: OpenTelemetry instrumentation, dashboards-as-code, and a demo harness.",
+      "An honest governance layer: a human-decided, durably recorded Trust Envelope and a fail-closed gate before the expensive stages.",
+      "A decoupled frontend contract: this site reads a documented, deterministic backend export — never the backend's internals."
+    ],
+    "description": "StoryTime turns approved public-domain text into podcast-ready audio, an RSS feed, and a traceable record of every run. SQLite and on-disk artifact envelopes are the source of truth; OpenTelemetry is an optional view. It was built as a portfolio-grade engineering project to show disciplined, observable, governed pipeline work — not as a hosted product.",
+    "name": "StoryTime",
+    "notClaims": [
+      "Not a hosted or production-deployed product — there is no server, no user accounts, and no SLA.",
+      "Not connected to a live backend in Phase 13C — every screen is backed by a static, deterministic demo export.",
+      "Not a legal rights-clearance engine — governance records a human decision; it does not perform legal automation.",
+      "Not a complete portfolio site or a complete operator GUI yet — later Phase 13 subphases build the rest."
+    ],
+    "reviewerPaths": [
+      {
+        "audience": "5-minute reviewer",
+        "id": "rp-5min",
+        "steps": [
+          "Read the homepage overview and the observability/governance points.",
+          "Open the Pipeline Run Detail view and read the golden-path run.",
+          "Switch to the review-required run to see how governance is shown."
+        ],
+        "summary": "The fastest honest read of what StoryTime is and shows.",
+        "timeBudget": "~5 min"
+      },
+      {
+        "audience": "Technical reviewer",
+        "id": "rp-technical",
+        "steps": [
+          "Read the homepage, then study both runs in the Pipeline Run Detail view.",
+          "Note the stage timeline: stage order, status, gates, and durations.",
+          "Review the static export contract in docs/frontend-static-export-contract.md.",
+          "Read docs/frontend-backend-contract.md for the backend boundary."
+        ],
+        "summary": "For an engineer evaluating the pipeline, observability, and the data contract.",
+        "timeBudget": "~20 min"
+      },
+      {
+        "audience": "Deep architecture reviewer",
+        "id": "rp-architecture",
+        "steps": [
+          "Read docs/phase13-portfolio-website-architecture.md and the frontend/backend contract.",
+          "Read docs/architecture-baseline.md sections 24 and 25 (governance, operator experience).",
+          "Trace a run through the stage timeline and the governance decision.",
+          "Read docs/phase13-roadmap.md for the 13A–13G subphase decomposition."
+        ],
+        "summary": "For a reviewer assessing architecture decisions and phase discipline.",
+        "timeBudget": "~45 min"
+      }
+    ],
+    "tagline": "A local-first, observability-native content-to-audio pipeline with a human-decided governance layer."
+  },
+  "runs": [
+    {
+      "allowedActions": [
+        {
+          "description": "Surfaces the CLI command an operator would run to regenerate the static operator report. The frontend only shows the command; it does not run anything.",
+          "id": "run-2026-0518-golden:copy-report-cmd",
+          "kind": "copy_command",
+          "label": "Copy: regenerate operator report command",
+          "payload": "uv run storytime report generate"
+        },
+        {
+          "description": "Points at the existing static HTML operator report for this run. Shown as a reference in the static shell.",
+          "id": "run-2026-0518-golden:open-report",
+          "kind": "open_reference",
+          "label": "Open static operator report (reference)",
+          "payload": "operator-report/run-run-2026-0518-golden.html"
+        }
+      ],
+      "artifacts": [
+        {
+          "durationSeconds": 224,
+          "id": "run-2026-0518-golden:audio",
+          "kind": "audio",
+          "label": "Assembled episode audio",
+          "reference": "runs/run-2026-0518-golden/episode.wav",
+          "sizeBytes": 7168000
+        },
+        {
+          "id": "run-2026-0518-golden:feed",
+          "kind": "feed",
+          "label": "Local RSS feed entry",
+          "reference": "feed/index.xml#run-2026-0518-golden"
+        },
+        {
+          "id": "run-2026-0518-golden:report",
+          "kind": "report",
+          "label": "Static operator report (run page)",
+          "reference": "operator-report/run-run-2026-0518-golden.html"
+        }
+      ],
+      "createdAt": "2026-05-18T09:12:04Z",
+      "disabledActions": [
+        {
+          "disabledReason": "Mutation actions are not implemented in Phase 13C. This run also succeeded, so there is nothing to re-run.",
+          "enabledByPhase": "Phase 13E",
+          "id": "run-2026-0518-golden:rerun",
+          "isMutation": true,
+          "label": "Re-run this pipeline run"
+        }
+      ],
+      "governance": {
+        "contextSummary": "Source authorized as CC0 public-domain text. Operator confirmed the source category before the run; the fail-closed gate passed.",
+        "disclaimer": "This is a record of a human operator's authorization decision. It is not legal advice and not a certification of copyright safety.",
+        "sourceCategory": "CC0",
+        "status": "allowed"
+      },
+      "id": "run-2026-0518-golden",
+      "label": "Aesop — The Fox and the Grapes (CC0 demo text)",
+      "observability": {
+        "correlationKey": "run-2026-0518-golden",
+        "links": [
+          {
+            "id": "run-2026-0518-golden:trace",
+            "kind": "trace",
+            "label": "Pipeline trace",
+            "note": "Per-stage spans for the full ingest-to-publish run.",
+            "reference": "trace://local/trace-9f3c12ab"
+          },
+          {
+            "id": "run-2026-0518-golden:dashboard",
+            "kind": "dashboard",
+            "label": "Pipeline overview dashboard",
+            "note": "Dashboard-as-code reference; not embedded here.",
+            "reference": "grafana/dashboards/pipeline-overview.json"
+          }
+        ],
+        "traceId": "trace-9f3c12ab"
+      },
+      "stages": [
+        {
+          "durationSeconds": 35,
+          "endedAt": "2026-05-18T09:12:39Z",
+          "id": "run-2026-0518-golden:ingest",
+          "isApprovalGate": false,
+          "name": "Ingest",
+          "note": "Source text ingested and normalized; manifest validated.",
+          "order": 0,
+          "startedAt": "2026-05-18T09:12:04Z",
+          "status": "succeeded"
+        },
+        {
+          "durationSeconds": 31,
+          "endedAt": "2026-05-18T09:13:10Z",
+          "id": "run-2026-0518-golden:governance-gate",
+          "isApprovalGate": true,
+          "name": "Governance Gate",
+          "note": "Trust Envelope APPROVED for a CC0 source; fail-closed gate passed.",
+          "order": 1,
+          "startedAt": "2026-05-18T09:12:39Z",
+          "status": "succeeded"
+        },
+        {
+          "durationSeconds": 292,
+          "endedAt": "2026-05-18T09:18:02Z",
+          "id": "run-2026-0518-golden:synthesize",
+          "isApprovalGate": false,
+          "name": "Synthesize",
+          "note": "Narration synthesized to audio segments.",
+          "order": 2,
+          "startedAt": "2026-05-18T09:13:10Z",
+          "status": "succeeded"
+        },
+        {
+          "durationSeconds": 133,
+          "endedAt": "2026-05-18T09:20:15Z",
+          "id": "run-2026-0518-golden:assemble",
+          "isApprovalGate": false,
+          "name": "Assemble",
+          "note": "Audio segments assembled into a single episode artifact.",
+          "order": 3,
+          "startedAt": "2026-05-18T09:18:02Z",
+          "status": "succeeded"
+        },
+        {
+          "durationSeconds": 36,
+          "endedAt": "2026-05-18T09:20:51Z",
+          "id": "run-2026-0518-golden:publish-gate",
+          "isApprovalGate": true,
+          "name": "Publish Approval",
+          "note": "Operator approved publication of the assembled episode.",
+          "order": 4,
+          "startedAt": "2026-05-18T09:20:15Z",
+          "status": "succeeded"
+        },
+        {
+          "durationSeconds": 56,
+          "endedAt": "2026-05-18T09:21:47Z",
+          "id": "run-2026-0518-golden:publish",
+          "isApprovalGate": false,
+          "name": "Publish",
+          "note": "Episode published to the local RSS feed.",
+          "order": 5,
+          "startedAt": "2026-05-18T09:20:51Z",
+          "status": "succeeded"
+        }
+      ],
+      "stateExplanation": "This run completed end to end. All six stages succeeded, governance allowed the CC0 source, and the episode was published to the local feed. No operator action is needed.",
+      "status": "succeeded",
+      "updatedAt": "2026-05-18T09:21:47Z"
+    },
+    {
+      "allowedActions": [
+        {
+          "description": "Surfaces the CLI command that lists runs needing operator attention. The frontend only shows the command; it does not run it.",
+          "id": "run-2026-0520-review:copy-queue-cmd",
+          "kind": "copy_command",
+          "label": "Copy: inspect the review queue command",
+          "payload": "uv run storytime queue --status needs-review"
+        }
+      ],
+      "artifacts": [],
+      "createdAt": "2026-05-20T13:48:55Z",
+      "disabledActions": [
+        {
+          "disabledReason": "Recording a governance review decision is a true mutation and is not implemented in Phase 13C. The operator GUI is read-only here.",
+          "enabledByPhase": "Phase 13E",
+          "id": "run-2026-0520-review:open-review",
+          "isMutation": true,
+          "label": "Open review workflow"
+        },
+        {
+          "disabledReason": "Retrying a run is a true mutation and is not implemented in Phase 13C. It would also only be eligible once the source has an authorization decision.",
+          "enabledByPhase": "Phase 13E",
+          "id": "run-2026-0520-review:retry",
+          "isMutation": true,
+          "label": "Retry after review"
+        }
+      ],
+      "failure": {
+        "errorKind": "GOVERNANCE_REVIEW_REQUIRED",
+        "operatorGuidance": "Review the source and record an authorization decision. If the source is authorized, the run can be retried; if not, it stays blocked. This is expected fail-closed behaviour, not a defect."
+      },
+      "governance": {
+        "contextSummary": "The submitted source has no confirmed authorization category yet. The fail-closed gate held the run so an operator can review the source and record an explicit decision. No expensive stage ran.",
+        "disclaimer": "This is a record of a human operator's authorization decision. It is not legal advice and not a certification of copyright safety.",
+        "sourceCategory": "PENDING_REVIEW",
+        "status": "review_required"
+      },
+      "id": "run-2026-0520-review",
+      "label": "Untitled community submission (source pending review)",
+      "observability": {
+        "correlationKey": "run-2026-0520-review",
+        "links": [
+          {
+            "id": "run-2026-0520-review:trace",
+            "kind": "trace",
+            "label": "Pipeline trace (partial run)",
+            "note": "Spans for ingest and the governance gate only.",
+            "reference": "trace://local/trace-2b71d004"
+          }
+        ],
+        "traceId": "trace-2b71d004"
+      },
+      "stages": [
+        {
+          "durationSeconds": 38,
+          "endedAt": "2026-05-20T13:49:33Z",
+          "id": "run-2026-0520-review:ingest",
+          "isApprovalGate": false,
+          "name": "Ingest",
+          "note": "Source text ingested and normalized; manifest validated.",
+          "order": 0,
+          "startedAt": "2026-05-20T13:48:55Z",
+          "status": "succeeded"
+        },
+        {
+          "durationSeconds": 117,
+          "endedAt": "2026-05-20T13:51:30Z",
+          "id": "run-2026-0520-review:governance-gate",
+          "isApprovalGate": true,
+          "name": "Governance Gate",
+          "note": "Fail-closed gate held the run: the source category needs an operator review decision before the run may continue.",
+          "order": 1,
+          "startedAt": "2026-05-20T13:49:33Z",
+          "status": "blocked"
+        },
+        {
+          "id": "run-2026-0520-review:synthesize",
+          "isApprovalGate": false,
+          "name": "Synthesize",
+          "note": "Not started — the run is held at the governance gate.",
+          "order": 2,
+          "status": "not_started"
+        },
+        {
+          "id": "run-2026-0520-review:assemble",
+          "isApprovalGate": false,
+          "name": "Assemble",
+          "note": "Not started — the run is held at the governance gate.",
+          "order": 3,
+          "status": "not_started"
+        },
+        {
+          "id": "run-2026-0520-review:publish-gate",
+          "isApprovalGate": true,
+          "name": "Publish Approval",
+          "note": "Not started — the run is held at the governance gate.",
+          "order": 4,
+          "status": "not_started"
+        },
+        {
+          "id": "run-2026-0520-review:publish",
+          "isApprovalGate": false,
+          "name": "Publish",
+          "note": "Not started — the run is held at the governance gate.",
+          "order": 5,
+          "status": "not_started"
+        }
+      ],
+      "stateExplanation": "This run is held at the governance gate. The fail-closed gate did its job: it stopped the run before any expensive stage because the source needs a human authorization decision. The run is blocked, not failed.",
+      "status": "blocked",
+      "updatedAt": "2026-05-20T13:51:30Z"
+    }
+  ],
+  "schemaVersion": "1.0"
+}

@@ -1,0 +1,20 @@
+# Grafana dashboard provisioning — StoryTime local observability stack.
+#
+# ZERO UI CONFIGURATION (Phase 6A acceptance criterion 7): every dashboard is
+# loaded as code from the mounted directory below. The dashboard JSON files in
+# config/grafana/dashboards are the canonical, version-controlled source; they
+# are not edited in the Grafana UI (editable: false).
+
+apiVersion: 1
+
+providers:
+  - name: storytime-dashboards
+    orgId: 1
+    folder: StoryTime
+    type: file
+    disableDeletion: true
+    editable: false
+    allowUiUpdates: false
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false

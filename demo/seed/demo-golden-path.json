@@ -1,0 +1,19 @@
+{
+  "manifest_version": 1,
+  "source_id": "demo-golden-path",
+  "title": "The Lamplighter",
+  "author": "StoryTime Demo Fixtures",
+  "source_url": "https://fixtures.storytime.invalid/golden-path",
+  "retrieval_date": "2026-01-02",
+  "jurisdiction": "US",
+  "license": "CC0-1.0",
+  "text_sha256": "49b41bbbb924ae373bb2c79d69f88f4a9f03f62b927d1bf96d97ed738d36a67c",
+  "text_encoding": "utf-8",
+  "text_path": "demo-golden-path.txt",
+  "language": "en",
+  "approval": {
+    "approved_by": "demo-operator",
+    "approved_at": "2026-01-02T00:00:00Z",
+    "review_notes": "Original text written for StoryTime demo fixtures and dedicated to the public domain under CC0-1.0; source authorised for the golden path."
+  }
+}
