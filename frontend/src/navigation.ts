@@ -91,55 +91,59 @@ export const NAV: readonly NavItem[] = [
  */
 export const PLACEHOLDERS: Record<string, PlaceholderContent> = {
   architecture: {
-    eyebrow: "Portfolio section · planned",
+    eyebrow: "Portfolio section · deferred",
     title: "Architecture Story",
-    plannedPhase: "Phase 13E or later",
+    plannedPhase: "Deferred after Phase 15C",
     intent:
-      "A standalone architecture page would explain the system boundary " +
-      "and the local-first design at greater depth than the embedded " +
-      "checkpoints in the Demo Walkthrough. Phase 13D.2 already " +
-      "absorbs about 80–90% of that narrative through the walkthrough " +
-      "checkpoints; a fuller standalone page is deferred to a possible " +
-      "later phase.",
+      "This public demo currently presents the architecture through the " +
+      "Overview, Demo Walkthrough, Evidence / Validation, Local Bridge, " +
+      "and Live Proof Loop views. A fuller standalone Architecture Story " +
+      "page is intentionally deferred so the public site remains honest: " +
+      "this is a cloud-hosted static operator demo, not a live production " +
+      "cloud backend.",
     willInclude: [
-      "A deeper system-boundary explanation that goes beyond the " +
-        "embedded walkthrough checkpoints.",
+      "A deeper system-boundary explanation that expands on the current " +
+        "walkthrough checkpoints.",
       "A fuller local-first architecture write-up.",
-      "A future cloud / hosting path explanation, framed as optional.",
-      "Public portfolio polish and interview leave-behind material.",
-      "A pointer back to the Demo Walkthrough as the primary entry " +
-        "point.",
+      "A cloud-readiness narrative covering runtime roles, queue, artifact, " +
+        "observability, and recovery seams.",
+      "A clear distinction between the current static demo and later cloud " +
+        "backend runtime work.",
+      "A pointer back to the Demo Walkthrough as the primary entry point.",
     ],
   },
   roadmap: {
-    eyebrow: "Portfolio section · planned",
+    eyebrow: "Portfolio section · deferred",
     title: "Roadmap",
-    plannedPhase: "Phase 13E or later",
+    plannedPhase: "Deferred after Phase 15C",
     intent:
-      "The Phase 13 subphase roadmap (13A–13G), so a reviewer can see " +
-      "how the portfolio website and operator GUI are being built " +
-      "incrementally.",
+      "A public roadmap page will summarize the completed local-first " +
+      "operator proof, the locked Phase 15C static demo, and the planned " +
+      "later cloud backend runtime path without implying that backend " +
+      "cloud execution exists today.",
     willInclude: [
-      "The 13A–13G subphase decomposition and current status.",
-      "What each subphase adds and what it deliberately defers.",
-      "A pointer to docs/phase13-roadmap.md as the source of record.",
+      "Completed milestones through the Phase 15C public static demo.",
+      "The distinction between locked local-first proof, static public demo, " +
+        "and future cloud backend runtime work.",
+      "A concise next-phase path for Phase 15D and beyond.",
+      "A pointer to docs/roadmap.md as the source of record.",
     ],
   },
   settings: {
-    eyebrow: "Operator view · planned",
+    eyebrow: "Operator view · deferred",
     title: "Settings / Config",
-    plannedPhase: "Phase 13E or later",
+    plannedPhase: "Deferred after Phase 15C",
     intent:
-      "The data-snapshot selector (Demo / Active / Candidate) and " +
-      "display preferences. In Phase 13D.2 the only snapshot is Demo " +
-      "and no switching is implemented; Active and Candidate are data " +
-      "snapshots, not deployment environments.",
+      "Settings and snapshot switching remain intentionally deferred. " +
+      "The public site is a static, read-only demo snapshot. It does not " +
+      "switch between live environments, does not contact a backend, and " +
+      "does not expose runtime configuration.",
     willInclude: [
-      "A Demo / Active / Candidate data-snapshot selector once " +
-        "additional read-only snapshots exist (browser-loaded, never " +
-        "mutating).",
-      "Display preferences for the operator views.",
-      "An honest statement of which snapshots are actually available.",
+      "An honest read-only snapshot selector only after additional static " +
+        "snapshots exist.",
+      "Display preferences for operator views.",
+      "A clear statement of which snapshots are available.",
+      "No secrets, no backend mutation, and no public runtime configuration.",
     ],
   },
 };
