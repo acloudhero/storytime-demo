@@ -1,25 +1,24 @@
 /**
- * navigation — Phase 13D.2 nav metadata helper.
+ * navigation — static navigation metadata for the public StoryTime demo.
  *
  * Extracts the static nav-key definitions, labels, and placeholder copy
  * out of `App.tsx` so the App component stays small and the view
  * definitions are documented in one place. This is metadata only: no
- * router, no Context, no global state. `App.tsx` continues to hold its
- * plain `useState<View>` navigation, the `inspectRun(runId)` drill-down
- * callback, and (new in Phase 13D.2) an `onNavigate(view)` callback
- * passed to the Demo Walkthrough view so its in-page step buttons can
- * change views without a router.
+ * router, no Context, no global state. `App.tsx` holds the plain
+ * `useState<View>` navigation, the `inspectRun(runId)` drill-down
+ * callback, and the `onNavigate(view)` callback passed to the Demo
+ * Walkthrough so its in-page step buttons can change views without a
+ * router.
  *
- * Phase 13D.2 promotes the **Demo Walkthrough** view from a placeholder
- * to a real view (`soon: false`). Demo Walkthrough sits next to
- * Evidence / Validation in the nav order so the real Phase 13B–13D.2
- * views form a contiguous group at the start of the nav, with the
- * remaining honest placeholders after them. The remaining placeholder
- * entries (Architecture Story, Roadmap, Settings) still point at Phase
- * 13E or later, because Phase 13D.2 is itself static / read-only and
- * not the right subphase for adding new live behaviour. The Settings
- * placeholder continues to describe the deferred Demo / Active /
- * Candidate snapshot selector.
+ * The Demo Walkthrough is an interactive static walkthrough surface.
+ * Architecture Story, Roadmap, and Settings / Config are intentionally
+ * non-mutating portfolio placeholders carrying the deployed Phase 15C.1
+ * copy. The hosted GitHub Pages demo is a static, read-only operator
+ * demo and runs no backend or cloud work; Local Bridge and Live Proof
+ * Loop remain local-only / operator-boundary surfaces. Backend cloud
+ * execution, runtime mutation, environment switching, file-picker
+ * loading, TTS playback, and RSS publishing remain out of scope unless a
+ * later reviewed phase adds them.
  */
 
 import type { PlaceholderContent } from "./components/Placeholder";
@@ -79,15 +78,14 @@ export const NAV: readonly NavItem[] = [
 /* ─────────────────── placeholder copy ─────────────────── */
 
 /**
- * Static copy for the remaining placeholder views. Each placeholder
- * points at the subphase that would replace it; per Phase 13D.2, the
- * remaining views are all flagged for Phase 13E or later. The
- * Architecture Story placeholder copy reflects that Phase 13D.2 has
- * absorbed ~80–90% of the narrative into the Demo Walkthrough view's
- * embedded checkpoints, with a possible later standalone page still
- * tracked as deferred. The Settings placeholder still describes the
- * deferred Demo / Active / Candidate snapshot selector — Phase 13D.2
- * does not implement switching, only the static framing.
+ * Static copy for the remaining placeholder views. Each placeholder is
+ * deferred after Phase 15C and frames the public site honestly: a
+ * cloud-hosted static, read-only operator demo, not a live production
+ * cloud backend. The Architecture Story placeholder points back to the
+ * Demo Walkthrough as the primary entry point; the Settings placeholder
+ * describes a read-only snapshot selector that remains deferred until
+ * additional committed static snapshots exist (no switching, no backend
+ * mutation, no public runtime configuration).
  */
 export const PLACEHOLDERS: Record<string, PlaceholderContent> = {
   architecture: {

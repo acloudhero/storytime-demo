@@ -6,8 +6,8 @@
  *
  * All long-form walkthrough content lives in this adapter, not in the
  * `DemoWalkthroughView` component. The view is a presentation shell that
- * iterates over the data exported here. This separation is an explicit
- * Phase 13D.2 prompt requirement so that the route definitions, step
+ * iterates over the data exported here. This separation is a deliberate
+ * design choice so that the route definitions, step
  * notes, architecture checkpoints, deferred-work explanations, talking
  * points, and repository references stay reviewable as data rather than
  * being buried in JSX.
@@ -21,8 +21,8 @@
  * (`run-2026-0518-golden` for the golden-path run; `run-2026-0520-review`
  * for the review-required run) so the reviewer is never asked to guess
  * which run proves the point. Both ids are present in the locked Phase
- * `frontend/src/data/storytime-demo-export.json` and are stable across the
- * Phase 13 lineage.
+ * `frontend/src/data/storytime-demo-export.json` and are stable in the
+ * committed static export the public demo reads.
  */
 
 import {
@@ -163,7 +163,7 @@ const stepReviewRun: WalkthroughStep = {
     "The disabled action cards are real `<button disabled>` elements " +
       "with no `onClick` handlers — they cannot be coaxed into firing.",
     "Approval / rejection happens out-of-band, not through this GUI; " +
-      "that boundary is the Phase 13E candidate.",
+      "that boundary belongs to a future reviewed phase.",
   ],
 };
 
@@ -199,7 +199,8 @@ const stepFailure: WalkthroughStep = {
     "Operational failure modes are observable: the operator can see " +
     `${DEMO_FAILURE_QUEUE.length} queued item(s) and the reason. The ` +
     "retry / acknowledge / dismiss controls are intentionally disabled " +
-    "in the GUI — those are the Phase 13E mutation boundary.",
+    "in the GUI — those belong to a deferred mutation boundary in a " +
+    "future reviewed phase.",
   talkingPoints: [
     "The queue is a real projection of the export, not a stub.",
     "Disabled affordances are honest about the static boundary — they " +
@@ -214,7 +215,8 @@ const stepEvidence: WalkthroughStep = {
   targetLabel: "Evidence / Validation",
   targetView: "evidence",
   whatToInspect:
-    "The STATIC PORTFOLIO DATA disclaimer, the evidence categories, the " +
+    "The static-portfolio-snapshot disclaimer (a static portfolio " +
+    "snapshot, not a live CI/CD dashboard), the evidence categories, the " +
     "Data Source / Demo Snapshot framing, and the repository-relative " +
     "evidence references.",
   whatItProves:
@@ -228,8 +230,10 @@ const stepEvidence: WalkthroughStep = {
       "portfolio.",
     "Each evidence claim points to a real repository file the reviewer " +
       "can open.",
-    "Demo / Active / Candidate are data snapshots, not deployment " +
-      "environments — and switching is deliberately not implemented yet.",
+    "The public site presents one committed demo snapshot; any future " +
+      "snapshots would be added only as committed, reviewable static data " +
+      "— not live deployment environments, and snapshot switching is not " +
+      "implemented.",
   ],
 };
 
@@ -247,8 +251,8 @@ const stepStaticExportBoundary: WalkthroughStep = {
     "The backend (`src/storytime/operator_export.py`) writes a typed, " +
     "deterministic JSON snapshot via `storytime export-demo-ui`; the " +
     "frontend reads only that committed JSON. The contract is locked " +
-    "and the export is byte-identical across the Phase 13D / 13D.1 / " +
-    "13D.2 lineage.",
+    "and the export is the byte-identical, stable source of truth for " +
+    "the public static demo.",
   talkingPoints: [
     "Backend owns truth (the runtime run produces the JSON).",
     "Frontend owns understanding (the GUI projects the JSON into views).",
@@ -297,8 +301,8 @@ const stepDisabledActionDiscipline: WalkthroughStep = {
   talkingPoints: [
     "Disabled means disabled — not greyed-out clickable.",
     "The component is shared, so the discipline is enforced in one place.",
-    "This is the readiness contract Phase 13E will satisfy when a real " +
-      "mutation surface is added behind a gate.",
+    "This is the readiness contract a future reviewed phase will satisfy " +
+      "when a real mutation surface is added behind a gate.",
   ],
 };
 
@@ -337,8 +341,9 @@ const stepDeferredBoundary: WalkthroughStep = {
     "not pretended-to.",
   talkingPoints: [
     "Deferred is named, not hidden — the register is a real document.",
-    "Phase 13E is the next gate; it is not started and not implied to " +
-      "exist behind the current UI.",
+    "Backend cloud runtime is the next gated work; it is deferred to a " +
+      "future reviewed phase and not implied to exist behind the current " +
+      "UI.",
     "Each deferred item names its risk profile and why it must be " +
       "gated.",
   ],
@@ -374,7 +379,7 @@ const stepSelfGuidedActionBoundary: WalkthroughStep = {
     "Governance / Safety. Try clicking them — nothing fires.",
   whatItProves:
     "Disabled actions are honest. The GUI does not pretend to retry, " +
-    "approve, or dismiss anything. Those are the Phase 13E candidates.",
+    "approve, or dismiss anything. Those belong to a future reviewed phase.",
   talkingPoints: [
     "If a button is greyed out, it is genuinely off — no hidden handler.",
     "What the GUI does not do is at least as important as what it does.",
@@ -452,8 +457,10 @@ const stepControlledRetry: WalkthroughStep = {
     "The controlled retry panel: it submits exactly one action type, " +
     "retry_failed_stage, and reports acceptance.",
   whatItProves:
-    "The only state-changing action the browser submits is one controlled " +
-    "retry. Acceptance is not success — a 202 means queued, so the operator " +
+    "In local execution, the only state-changing action the browser " +
+    "submits is one controlled retry; the hosted public demo submits no " +
+    "runtime work and gates this surface to a local-only notice. " +
+    "Acceptance is not success — a 202 means queued, so the operator " +
     "observes the lifecycle.",
   talkingPoints: [
     "One action only: retry_failed_stage.",
@@ -571,10 +578,13 @@ export const ROUTES: readonly Route[] = [
     purpose: "The post-13J governed local-chain story",
     approximateMinutes: 7,
     intro:
-      "The story Phase 13J brought into focus: the modes and boundaries, the " +
-      "optional loopback bridge, the one controlled retry, the manual " +
-      "snapshot reload, and the governed mock-first TTS proof. Each stop " +
-      "points at a real surface; nothing here adds an execution path.",
+      "The governed local-chain story: the modes and boundaries, the " +
+      "local-only loopback bridge, the one controlled retry, the manual " +
+      "snapshot reload, and the governed mock-first TTS proof. These are " +
+      "local-only / operator-boundary surfaces — in the hosted public " +
+      "GitHub Pages demo they are gated to static/local-only notices and " +
+      "the public site submits no runtime work. Each stop points at a real " +
+      "surface; nothing here adds an execution path.",
     steps: [
       stepModes,
       stepBridgeReadiness,
@@ -588,10 +598,10 @@ export const ROUTES: readonly Route[] = [
 /* ─────────────────────── architecture checkpoints ──────────────── */
 
 /**
- * Architecture-checkpoint cards rendered below the active route. Phase
- * 13D.2 absorbs ~80–90% of an Architecture Story narrative through
- * these checkpoints, deliberately keeping them concise and tied to
- * what the reviewer can inspect in the GUI. There are no diagrams,
+ * Architecture-checkpoint cards rendered below the active route. These
+ * checkpoints carry the architecture narrative concisely and tied to
+ * what the reviewer can inspect in the GUI; a fuller standalone
+ * Architecture Story page remains deferred. There are no diagrams,
  * SVGs, or images — only typography, lists, and callout cards.
  */
 export interface ArchitectureCheckpoint {
@@ -614,9 +624,11 @@ export const ARCHITECTURE_CHECKPOINTS: readonly ArchitectureCheckpoint[] = [
       "The repository ships a `storytime` CLI with `export-demo-ui`.",
       "The committed export JSON is the only data source for the static " +
         "demo path.",
-      "The static demo path makes no backend calls; the optional Local " +
-        "Bridge surface adds GET-only loopback observability, one controlled " +
-        "retry, and a manual export reload, all operator-initiated.",
+      "The static demo path makes no backend calls; in local execution " +
+        "the optional Local Bridge surface adds GET-only loopback " +
+        "observability, one controlled retry, and a manual export reload, " +
+        "all operator-initiated, and the hosted public demo gates these to " +
+        "local-only notices.",
     ],
   },
   {
@@ -630,8 +642,8 @@ export const ARCHITECTURE_CHECKPOINTS: readonly ArchitectureCheckpoint[] = [
     inspectableEvidence: [
       "`src/storytime/operator_export.py` is the canonical generator.",
       "`tests/test_operator_export.py` walks and verifies the schema.",
-      `Schema version ${EXPORT_META.schemaVersion}; the export is ` +
-        "stable across the Phase 13 lineage.",
+      `Schema version ${EXPORT_META.schemaVersion}; the export remains ` +
+        "the stable source of truth for the public static demo.",
     ],
   },
   {
@@ -655,10 +667,11 @@ export const ARCHITECTURE_CHECKPOINTS: readonly ArchitectureCheckpoint[] = [
     id: "read-only-operator-surface",
     title: "Read-only operator surface",
     summary:
-      "The Phase 13 operator GUI is deliberately read-only across all " +
-      "views. Operators can navigate, inspect, and understand — but no " +
-      "click in this GUI changes pipeline state today. Mutation is " +
-      "Phase 13E's gate.",
+      "The public Phase 15C operator demo is deliberately static and " +
+      "read-only across hosted views. Operators can navigate, inspect, " +
+      "and understand — but no click in the hosted demo changes pipeline " +
+      "state. A real mutation surface is deferred to a future reviewed " +
+      "phase.",
     inspectableEvidence: [
       "Every action button that would mutate is a real " +
         "`<button disabled={true}>` with no `onClick`.",
@@ -670,11 +683,12 @@ export const ARCHITECTURE_CHECKPOINTS: readonly ArchitectureCheckpoint[] = [
     id: "static-evidence-boundary",
     title: "Static evidence boundary",
     summary:
-      "The Evidence / Validation view carries the mandatory STATIC " +
-      "PORTFOLIO DATA — NOT A LIVE CI/CD DASHBOARD disclaimer and " +
-      "points to repository-relative artifacts (verification log, " +
-      "static export contract, deferred-work register, phase history, " +
-      "guard tests). Nothing in the GUI fabricates CI status.",
+      "The Evidence / Validation view carries the static-portfolio " +
+      "disclaimer — a static portfolio snapshot, not a live CI/CD " +
+      "dashboard — and points to repository-relative artifacts " +
+      "(verification log, static export contract, deferred-work register, " +
+      "phase history, guard tests). Nothing in the GUI fabricates CI " +
+      "status.",
     inspectableEvidence: [
       "`docs/verification-log.md` records each round's actual gate runs.",
       "`docs/frontend-static-export-contract.md` documents the contract.",
@@ -701,28 +715,30 @@ export const ARCHITECTURE_CHECKPOINTS: readonly ArchitectureCheckpoint[] = [
     title: "Demo / Active / Candidate are data snapshots",
     summary:
       "Demo, Active, and Candidate are data snapshots, NOT deployment " +
-      "environments. The Demo snapshot is what's committed today; " +
-      "Active and Candidate are placeholders for future committed " +
-      "snapshots once the project is run on real (non-demo) input. " +
-      "Switching between snapshots is intentionally not implemented yet.",
+      "environments. The public site currently presents one committed " +
+      "Demo snapshot; Active and Candidate are placeholders for future " +
+      "committed, reviewable static snapshots once the project is run on " +
+      "real (non-demo) input. They do not imply backend execution, and " +
+      "snapshot switching is not implemented.",
     inspectableEvidence: [
       "The header Data Source chip names the current snapshot.",
       "The Evidence view's Data Source section explains the framing.",
-      "The Settings placeholder names the future snapshot selector as " +
-        "Phase 13E-or-later work.",
+      "Future snapshots would be added only as committed, reviewable " +
+        "static data, not as live deployment environments.",
     ],
   },
   {
     id: "governed-local-chain",
     title: "Governed local chain (optional, behind explicit gates)",
     summary:
-      "Beyond the static demo, StoryTime now has an optional governed local " +
-      "chain that landed behind explicit review gates across Phase 13F–13J: " +
-      "loopback bridge observability, one controlled retry of a failed stage, " +
-      "a manual validated export reload, and a governed mock-first local TTS " +
-      "proof. The browser stays an operator surface — acceptance is not " +
-      "success, reload is a manual refresh rather than a live sync, and " +
-      "generation stays backend/CLI-owned.",
+      "Beyond the static demo, StoryTime has an optional governed local " +
+      "chain that landed behind explicit review gates: loopback bridge " +
+      "observability, one controlled retry of a failed stage, a manual " +
+      "validated export reload, and a governed mock-first local TTS proof. " +
+      "These are local-only surfaces, gated to static/local-only notices in " +
+      "the hosted public demo. The browser stays an operator surface — " +
+      "acceptance is not success, reload is a manual refresh rather than a " +
+      "live sync, and generation stays backend/CLI-owned.",
     inspectableEvidence: [
       "`frontend/src/data/localBridgeClient.ts` is GET-only; " +
         "`frontend/src/data/localBridgeActions.ts` submits only " +
@@ -757,10 +773,13 @@ export const DEFERRED_ITEMS: readonly DeferredItem[] = [
     id: "broad-rerun",
     title: "No broad re-run / batch from the GUI",
     explanation:
-      "The GUI submits exactly one controlled action — a retry of a failed " +
-      "stage — to a loopback bridge, and acceptance is not success (the " +
-      "operator observes the lifecycle). Broad re-run, batch runs, and " +
-      "arbitrary actions remain deferred.",
+      "The public GitHub Pages demo submits no runtime work. Controlled " +
+      "local actions belong to local execution only and are gated behind " +
+      "static/local-only notices in the hosted build: in local execution " +
+      "the GUI submits exactly one controlled action — a retry of a failed " +
+      "stage — and acceptance is not success (the operator observes the " +
+      "lifecycle). Broad re-run, batch runs, and arbitrary actions remain " +
+      "deferred.",
   },
   {
     id: "review-write",
@@ -774,37 +793,39 @@ export const DEFERRED_ITEMS: readonly DeferredItem[] = [
     id: "dynamic-local-loading",
     title: "No file picker / drag-and-drop / remote loader",
     explanation:
-      "The operator can manually reload the committed " +
-      "`storytime-demo-export.json` to refresh the transient read model, but " +
-      "there is no runtime file picker, no drag-and-drop loader, and no " +
+      "In local execution the operator can manually reload the committed " +
+      "`storytime-demo-export.json` to refresh the transient read model; " +
+      "the hosted public demo serves that committed snapshot statically. " +
+      "There is no runtime file picker, no drag-and-drop loader, and no " +
       "arbitrary remote fetch. The reload is operator-triggered and validated.",
   },
   {
     id: "snapshot-switching",
     title: "No Demo / Active / Candidate switching",
     explanation:
-      "Active and Candidate are framed as future committed snapshots, " +
-      "not selectable today. The Settings placeholder names the future " +
-      "selector.",
+      "Active and Candidate are framed as future committed, reviewable " +
+      "static snapshots, not selectable today. Any future snapshot selector " +
+      "would be added only as committed, reviewable static data and does " +
+      "not imply backend execution.",
   },
   {
     id: "hosting",
-    title: "No production hosting",
+    title: "Public static hosting is live; backend cloud execution deferred",
     explanation:
-      "Phase 13D.2 is a static build runnable from any static host or " +
-      "the local filesystem. Public hosting is deferred to a later " +
-      "Phase 13 subphase and is optional.",
+      "Public static hosting is now live on GitHub Pages: a static, " +
+      "read-only, demo-data-backed build. Backend cloud execution remains " +
+      "deferred to a future reviewed phase.",
   },
   {
     id: "architecture-story-page",
     title: "No standalone Architecture Story page",
     explanation:
-      "Phase 13D.2 absorbs ~80–90% of the architecture narrative into " +
-      "the walkthrough checkpoints above. A standalone Architecture " +
-      "Story page — fuller system-boundary explanation, deeper " +
-      "local-first architecture, future cloud path, public portfolio " +
-      "polish, and interview leave-behind material — is tracked as a " +
-      "deferred item in `docs/frontend-gui-deferred-work-register.md`.",
+      "The current public demo carries the architecture narrative through " +
+      "Overview, Demo Walkthrough, Evidence / Validation, Local Bridge, and " +
+      "Live Proof Loop. A fuller standalone Architecture Story page — deeper " +
+      "system-boundary explanation, the future backend cloud path, and " +
+      "interview leave-behind material — remains deferred and is tracked in " +
+      "`docs/frontend-gui-deferred-work-register.md`.",
   },
   {
     id: "frontend-tts-generation",
@@ -841,8 +862,8 @@ export const DEFERRED_ITEMS: readonly DeferredItem[] = [
     id: "full-local-and-cloud",
     title: "No full Local mode or Cloud / Distributed mode",
     explanation:
-      "Today's local surface is the optional loopback bridge plus manual " +
-      "reload. A full Local mode and any Cloud / Distributed mode are " +
+      "In local execution the surface is the optional loopback bridge plus " +
+      "manual reload. A full Local mode and any Cloud / Distributed mode are " +
       "deferred; StoryTime is local-first.",
   },
 ];
@@ -884,17 +905,19 @@ export const INTERVIEW_TALKING_POINTS: readonly TalkingPoint[] = [
     id: "static-proof",
     label: "Static proof boundaries",
     body:
-      "The Evidence / Validation view declares STATIC PORTFOLIO DATA — " +
-      "NOT A LIVE CI/CD DASHBOARD and points to real repository files. " +
-      "The portfolio earns trust by being honest about what it is.",
+      "The Evidence / Validation view declares it is a static portfolio " +
+      "snapshot, not a live CI/CD dashboard, and points to real repository " +
+      "files. The portfolio earns trust by being honest about what it is.",
   },
   {
     id: "mutation-discipline",
     label: "Safe mutation-boundary discipline",
     body:
       "State-changing actions stay real disabled buttons, with one " +
-      "deliberate exception that landed behind explicit review: a single " +
-      "controlled retry of a failed stage, submitted to a loopback bridge. " +
+      "deliberate exception that landed behind explicit review and runs in " +
+      "local execution only: a single controlled retry of a failed stage " +
+      "over the local loopback bridge. The hosted public demo submits no " +
+      "runtime work and gates that surface to a local-only notice. " +
       "Acceptance is not success, and the operator must observe the " +
       "lifecycle. Every other mutation stays gated rather than smuggled in. " +
       "That is portfolio-grade discipline.",
@@ -924,11 +947,12 @@ export const INTERVIEW_TALKING_POINTS: readonly TalkingPoint[] = [
     id: "local-bridge-boundary",
     label: "Local bridge boundary",
     body:
-      "The optional Local Bridge is loopback-only infrastructure: read-only " +
-      "observability over GET, plus exactly one controlled retry submitted " +
-      "over a single POST. It is not exposed to the public web and carries no " +
-      "browser credentials. The browser is an operator surface; the backend " +
-      "owns execution and state.",
+      "The optional Local Bridge is local-only, loopback-only " +
+      "infrastructure: read-only observability over GET, plus exactly one " +
+      "controlled retry submitted over a single POST in local execution. It " +
+      "is not exposed to the public web, is gated to a local-only notice in " +
+      "the hosted public demo, and carries no browser credentials. The " +
+      "browser is an operator surface; the backend owns execution and state.",
   },
 ];
 
@@ -1017,11 +1041,13 @@ export const HEADER = {
     `A guided reviewer / demo path through the existing ${DEMO_PROJECT.name} ` +
     "operator GUI. Pick a route to fit your time budget; each step tells " +
     "you what to inspect, what it proves, and what to say about it. Most " +
-    "steps link into read-only views; the optional Local Bridge surface adds " +
-    "loopback observability, one controlled retry, and a manual snapshot " +
-    "reload — all operator-initiated — and the governed TTS proof appears as " +
-    "read-only evidence. See docs/demo-walkthrough.md for the canonical " +
-    "written walkthrough and the evidence map.",
+    "steps link into read-only views; the Local Bridge and Live Proof Loop " +
+    "are local-only / operator-boundary surfaces — gated to static/local-only " +
+    "notices in the hosted public demo, where they demonstrate loopback " +
+    "observability, one controlled retry, and a manual snapshot reload in " +
+    "local execution — and the governed TTS proof appears as read-only " +
+    "evidence. See docs/demo-walkthrough.md for the canonical written " +
+    "walkthrough and the evidence map.",
 } as const;
 
 /* ─────────────────────── sanity exports for tests / introspection ── */
@@ -1036,9 +1062,9 @@ export const REFERENCED_RUN_IDS: readonly string[] = [
 ];
 
 /**
- * Convenience — the count of run summaries the wider GUI shows. Phase
- * 13D.2 does not depend on this number being any particular value; it
- * exists so a future test or sanity log line can reason about it
- * without re-importing the adapter elsewhere.
+ * Convenience — the count of run summaries the wider GUI shows. Nothing
+ * depends on this number being any particular value; it exists so a
+ * future test or sanity log line can reason about it without
+ * re-importing the adapter elsewhere.
  */
 export const RUN_SUMMARY_COUNT = DEMO_RUN_SUMMARIES.length;
